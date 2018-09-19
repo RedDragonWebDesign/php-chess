@@ -133,25 +133,60 @@ class ChessRulebook {
 		}
 		
 		if ( $need_perfect_notation ) {
-			// TODO: Move notation - disambiguate vague starting squares
-			// foreach $moves as $key => $move
-				// if $move->piece->type == queen, rook, knight, bishop
-					// $pieces_on_same_rank
-					// $pieces_on_same_file
-					// if ( $pieces_on_same_rank > 1 && $pieces_on_same_file > 1 )
-						// $move->disambiguation = columnrow;
-					// elseif ( $pieces_on_same_rank > 1 )
-						// $move->disambiguation = row);
-					// elseif ( $pieces_on_same_column > 1 )
-						// $move->disambiguation = column;
+			self::clarify_ambiguous_pieces($moves, $color_to_move, $board);
 			
-			// if move puts enemy king in check/checkmate, tell the $move object so it can add a +/# to the notation
 			self::mark_checks_and_checkmates($moves, $color_to_move);
 			
 			// TODO: alphabetize
 		}
 		
 		return $moves;
+	}
+	
+	// Return format is the FIRST DUPLICATE. The second duplicate is deleted.
+	// It keeps the original key intact.
+	static function get_duplicates($array) {
+		return array_unique(array_diff_assoc($array, array_unique($array)));
+	}
+	
+	static function clarify_ambiguous_pieces($moves, $color_to_move, $board) {
+		// For queens, rooks, bishops, and knights
+		foreach ( self::PROMOTION_PIECES as $type ) {
+			// Create list of ending squares that this type of piece can move to
+			$ending_squares = array();
+			foreach ( $moves as $key => $move ) {
+				if ( $move->piece_type == $type ) {
+					array_push($ending_squares, $move->ending_square->alphanumeric);
+				}
+			}
+			
+			// Isolate the duplicate squares
+			$duplicates = self::get_duplicates($ending_squares);
+			
+			foreach ( $moves as $key => $move ) {
+				if ( $move->piece_type != $type ) {
+					continue;
+				}
+				
+				if ( ! in_array($move->ending_square->alphanumeric, $duplicates) ) {
+					continue;
+				}
+				
+				$pieces_on_same_rank = $board->count_pieces_on_rank($move->piece_type, $move->starting_square->rank, $color_to_move);
+				$pieces_on_same_file = $board->count_pieces_on_file($move->piece_type, $move->starting_square->file, $color_to_move);
+				
+				if ( $pieces_on_same_rank > 1 && $pieces_on_same_file > 1 ) {
+					// TODO: This isn't perfect. If queens on a8, c8, a6, the move Q8a7 will display as
+					// Qa8a7, even though the queen on c8 can't move there. To fix, we probably have to
+					// generate a legal move list for each piece.
+					$move->disambiguation = $move->starting_square->alphanumeric;
+				} elseif ( $pieces_on_same_rank > 1 ) {
+					$move->disambiguation = $move->starting_square->get_file_letter();
+				} elseif ( $pieces_on_same_file > 1 ) {
+					$move->disambiguation = $move->starting_square->rank;
+				}
+			}
+		}
 	}
 	
 	static function add_slide_and_slidecapture_moves_to_moves_list($directions_list, $spaces, $moves, $piece, $color_to_move, $board, $store_board_in_moves) {

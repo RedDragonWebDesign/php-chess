@@ -464,4 +464,36 @@ class ChessBoard {
 	
 		$this->board[$rank][$file] = NULL;
 	}
+	
+	function count_pieces_on_rank($type, $rank, $color) {
+		$count = 0;
+		
+		for ( $i = 1; $i <= 8; $i++ ) {
+			$piece = $this->board[$rank][$i];
+			
+			if ( $piece ) {
+				if ( $piece->type == $type && $piece->color == $color ) {
+					$count++;
+				}
+			}
+		}
+		
+		return $count;
+	}
+	
+	function count_pieces_on_file($type, $file, $color) {
+		$count = 0;
+		
+		for ( $i = 1; $i <= 8; $i++ ) {
+			$piece = $this->board[$i][$file];
+			
+			if ( $piece ) {
+				if ( $piece->type == $type && $piece->color == $color ) {
+					$count++;
+				}
+			}
+		}
+		
+		return $count;
+	}
 }

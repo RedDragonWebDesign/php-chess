@@ -53,4 +53,8 @@ class ChessSquare {
 		$this->rank = substr($alphanumeric, 1, 1);
 		$this->file = self::FILE_LETTERS_AND_NUMS[ substr($alphanumeric, 0, 1) ];
 	}
+	
+	function get_file_letter() {
+		return self::FILE_NUMS_AND_LETTERS[$this->file];
+	}
 }
