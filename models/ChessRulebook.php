@@ -354,33 +354,14 @@ class ChessRulebook {
 				);
 				
 				// en passant target square
-				if (
-					$piece->type == 'pawn' &&
-					$i == 2
-				) {
-					$en_passant_xy = self::DIRECTION_OFFSETS[$direction];
-					$en_passant_xy[0] *= 1;
-					$en_passant_xy[1] *= 1;
-					
-					$en_passant_target_square = self::square_exists_and_not_occupied_by_friendly_piece(
-						$piece->square,
-						$en_passant_xy[0],
-						$en_passant_xy[1],
-						$color_to_move,
-						$board
-					);
-					
-					if ($store_board_in_moves ) {
-						$new_move->board->en_passant_target_square = $en_passant_target_square;
-					}
+				if ( $piece->type == 'pawn' && $i == 2 && $store_board_in_moves ) {
+					self::set_en_passant_target_square($piece, $color_to_move, $board, $new_move, $direction);
 				}
 				
 				// pawn promotion
 				$white_pawn_moving_to_rank_8 = $piece->type == "pawn" && $ending_square->rank == 8 && $piece->color == "white";
 				$black_pawn_moving_to_rank_1 = $piece->type == "pawn" && $ending_square->rank == 1 && $piece->color == "black";
-				if (
-					$white_pawn_moving_to_rank_8 || $black_pawn_moving_to_rank_1
-				) {
+				if ( $white_pawn_moving_to_rank_8 || $black_pawn_moving_to_rank_1 ) {
 					foreach ( self::PROMOTION_PIECES as $key => $type ) {
 						$move2 = clone $new_move;
 						$move2->set_promotion_piece($type);
@@ -401,6 +382,22 @@ class ChessRulebook {
 		}
 		
 		return $moves;
+	}
+	
+	static function set_en_passant_target_square($piece, $color_to_move, $board, $new_move, $direction) {
+		$en_passant_xy = self::DIRECTION_OFFSETS[$direction];
+		$en_passant_xy[0] *= 1;
+		$en_passant_xy[1] *= 1;
+		
+		$en_passant_target_square = self::square_exists_and_not_occupied_by_friendly_piece(
+			$piece->square,
+			$en_passant_xy[0],
+			$en_passant_xy[1],
+			$color_to_move,
+			$board
+		);
+		
+		$new_move->board->en_passant_target_square = $en_passant_target_square;
 	}
 	
 	static function add_jump_and_jumpcapture_moves_to_moves_list($oclock_list, $moves, $piece, $color_to_move, $board, $store_board_in_moves) {
