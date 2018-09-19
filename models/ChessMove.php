@@ -39,7 +39,7 @@ class ChessMove {
 		$this->piece_type = $piece_type;
 		$this->capture = $capture;
 		
-		// These cases are rare. The data is passed in via set functions instead of in the constructor.
+		// These cases are rare. The data is passed in via $move->var = X instead of in the constructor.
 		$this->disambiguation = '';
 		$this->promotion_piece_type = NULL;
 		$this->en_passant = FALSE;
@@ -55,7 +55,8 @@ class ChessMove {
 				$this->board = clone $old_board;
 				$this->board->make_move($starting_square, $ending_square);
 				
-				$this->possibly_remove_castling_privileges();
+				$this->possibly_remove_our_castling_privileges();
+				$this->possibly_remove_enemy_castling_privileges();
 				
 				$this->if_castling_move_rook();
 			} else { // Null move. Using it just to store a board.
@@ -64,43 +65,44 @@ class ChessMove {
 		}
 	}
 	
-	function possibly_remove_castling_privileges() {
-		// if the king or rook moves, update the FEN to take away castling privileges
+	function possibly_remove_our_castling_privileges() {
+		// if our king or rook moves update the FEN to take away our castling privileges
 		if ( $this->color == 'black' ) {
-			if (
-				$this->piece_type == 'king' &&
-				$this->starting_square->alphanumeric == 'e8'
-			) {
+			if ( $this->piece_type == 'king' && $this->starting_square->alphanumeric == 'e8' ) {
 				$this->board->castling['black_can_castle_kingside'] = FALSE;
 				$this->board->castling['black_can_castle_queenside'] = FALSE;
-			} elseif (
-				$this->piece_type == 'rook' &&
-				$this->starting_square->alphanumeric == 'a8'
-			) {
+			} elseif ( $this->piece_type == 'rook' && $this->starting_square->alphanumeric == 'a8' ) {
 				$this->board->castling['black_can_castle_queenside'] = FALSE;
-			} elseif (
-				$this->piece_type == 'rook' &&
-				$this->starting_square->alphanumeric == 'h8'
-			) {
+			} elseif ( $this->piece_type == 'rook' && $this->starting_square->alphanumeric == 'h8' ) {
 				$this->board->castling['black_can_castle_kingside'] = FALSE;
 			}
 		} elseif ( $this->color == 'white' ) {
-			if (
-				$this->piece_type == 'king' &&
-				$this->starting_square->alphanumeric == 'e1'
-			) {
+			if ( $this->piece_type == 'king' && $this->starting_square->alphanumeric == 'e1' ) {
 				$this->board->castling['white_can_castle_kingside'] = FALSE;
 				$this->board->castling['white_can_castle_queenside'] = FALSE;
-			} elseif (
-				$this->piece_type == 'rook' &&
-				$this->starting_square->alphanumeric == 'a1'
-			) {
+			} elseif ( $this->piece_type == 'rook' && $this->starting_square->alphanumeric == 'a1' ) {
 				$this->board->castling['white_can_castle_queenside'] = FALSE;
-			} elseif (
-				$this->piece_type == 'rook' &&
-				$this->starting_square->alphanumeric == 'h1'
-			) {
+			} elseif ( $this->piece_type == 'rook' && $this->starting_square->alphanumeric == 'h1' ) {
 				$this->board->castling['white_can_castle_kingside'] = FALSE;
+			}
+		}
+	}
+	
+	function possibly_remove_enemy_castling_privileges() {
+		// If an enemy rook is captured, update the FEN to take away enemy castling privileges.
+		// We'll keep it simple. Anytime a piece moves into a corner square (a1, a8, h1, h8),
+		// remove the other side's castling privileges.
+		if ( $this->color == 'black' ) {
+			if ( $this->ending_square->alphanumeric == 'a1' ) {
+				$this->board->castling['white_can_castle_queenside'] = FALSE;
+			} elseif ( $this->ending_square->alphanumeric == 'h1' ) {
+				$this->board->castling['white_can_castle_kingside'] = FALSE;
+			}
+		} elseif ( $this->color == 'white' ) {
+			if ( $this->ending_square->alphanumeric == 'a8' ) {
+				$this->board->castling['black_can_castle_queenside'] = FALSE;
+			} elseif ( $this->ending_square->alphanumeric == 'h8' ) {
+				$this->board->castling['black_can_castle_kingside'] = FALSE;
 			}
 		}
 	}
