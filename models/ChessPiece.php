@@ -54,7 +54,7 @@ class ChessPiece
 		if ( in_array($color, self::VALID_COLORS) ) {
 			$this->color = $color;
 		} else {
-			throw new Exception('ChessPiece Class - Invalid Color');
+			throw new Exception('Invalid ChessPiece Color');
 		}
 		
 		$this->square = new ChessSquare($square_string);
@@ -62,7 +62,7 @@ class ChessPiece
 		if ( in_array($type, self::VALID_TYPES) ) {
 			$this->type = $type;
 		} else {
-			throw new Exception('ChessPiece Class - Invalid Type');
+			throw new Exception('Invalid ChessPiece Type');
 		}
 		
 		$this->value = self::PIECE_VALUES[$type] * self::SIDE_VALUES[$color];

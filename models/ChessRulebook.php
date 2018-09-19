@@ -553,13 +553,13 @@ class ChessRulebook {
 			$file = $rook_start_square->file;
 			$piece_to_check = $board->board[$rank][$file];
 			if ( ! $piece_to_check ) {
-				throw new Exception('ChessGame Class - Invalid FEN - Castling permissions set to TRUE but rook is missing');
+				throw new Exception('Invalid FEN - Castling permissions set to TRUE but rook is missing');
 			}
 			if (
 				$piece_to_check->type != 'rook' ||
 				$piece_to_check->color != $board->color_to_move
 			) {
-				throw new Exception('ChessGame Class - Invalid FEN - Castling permissions set to TRUE but rook is missing');
+				throw new Exception('Invalid FEN - Castling permissions set to TRUE but rook is missing');
 			}
 			
 			// The ChessMove class handles displaying castling notation, taking castling privileges out of the FEN, and moving the rook into the right place on the board. No need to do anything extra here.
@@ -601,12 +601,13 @@ class ChessRulebook {
 	}
 	
 	static function eliminate_king_in_check_moves($king, $moves, $color_to_move) {
-		$enemy_color = self::invert_color($color_to_move);
-		
-		$new_moves = array();
 		if ( ! $king ) {
-			throw new Exception('ChessGame Class - Invalid FEN - One of the kings is missing');
+			throw new Exception('Invalid FEN - One of the kings is missing');
 		}
+		
+		$enemy_color = self::invert_color($color_to_move);
+		$new_moves = array();
+		
 		foreach ( $moves as $key => $move ) {
 			$friendly_king_square = $move->board->get_king_square($color_to_move);
 			

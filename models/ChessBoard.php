@@ -67,7 +67,7 @@ class ChessBoard {
 		$valid_fen = preg_match(self::FEN_REGEX_FORMAT, $fen, $matches);
 		
 		if ( ! $valid_fen ) {
-			throw new Exception('ChessBoard Class - Invalid FEN');
+			throw new Exception('Invalid FEN');
 		}
 		
 		// ******* CREATE PIECES AND ASSIGN THEM TO SQUARES *******
@@ -128,7 +128,7 @@ class ChessBoard {
 		} elseif ( $matches[9] == 'b' ) {
 			$this->color_to_move = 'black';
 		} else {
-			throw new Exception('ChessBoard Class - Invalid FEN - Invalid Color To Move');
+			throw new Exception('Invalid FEN - Invalid Color To Move');
 		}
 		
 		// Set all castling to false. Only set to true if letter is present in FEN. Prevents bugs.
