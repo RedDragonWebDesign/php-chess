@@ -15,12 +15,12 @@ class ChessMove {
 	public $color;
 	public $piece_type;
 	public $capture;
-	public $check;
-	public $checkmate;
-	public $promotion_piece_type; // Use the setter to change this. Keeping public so it can be read publicly.
-	public $en_passant;
-	public $disambiguation;
-	public $castling;
+	public $check = FALSE;
+	public $checkmate = FALSE;
+	public $promotion_piece_type = NULL; // Use the setter to change this. Keeping public so it can be read publicly.
+	public $en_passant = FALSE;
+	public $disambiguation = '';
+	public $castling = FALSE;
 	
 	public $board;
 	
@@ -39,28 +39,18 @@ class ChessMove {
 		$this->piece_type = $piece_type;
 		$this->capture = $capture;
 		
-		// These cases are rare. The data is passed in via $move->var = X instead of in the constructor.
-		$this->disambiguation = '';
-		$this->promotion_piece_type = NULL;
-		$this->en_passant = FALSE;
-		$this->check = FALSE;
-		$this->checkmate = FALSE;
-		
-		// This case is set in the "if castling move rook" method. Set it FALSE for now.
-		$this->castling = FALSE;		
-		
-		// Adding $store_board check sped up the code by 300ms
+		// Adding $store_board sped up the code by 300ms
 		if ( $store_board ) {
+			$this->board = clone $old_board;
+			
+			// Perft uses an empty move to store a board. If not empty move, modify the board.
 			if ( $this->starting_square ) {
-				$this->board = clone $old_board;
 				$this->board->make_move($starting_square, $ending_square);
 				
 				$this->possibly_remove_our_castling_privileges();
 				$this->possibly_remove_enemy_castling_privileges();
 				
 				$this->if_castling_move_rook();
-			} else { // Null move. Using it just to store a board.
-				$this->board = clone $old_board;
 			}
 		}
 	}
