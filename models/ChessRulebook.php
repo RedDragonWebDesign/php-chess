@@ -677,14 +677,12 @@ class ChessRulebook {
 	}
 	
 	static function get_squares_attacked_by_this_color($color, $board) {
-		$legal_moves_for_opponent = self::get_legal_moves_list($color, $board, FALSE, FALSE, FALSE);
+		$legal_moves_for_attacker = self::get_legal_moves_list($color, $board, FALSE, FALSE, FALSE);
 		
 		$squares_attacked = array();
-		foreach ( $legal_moves_for_opponent as $key => $move ) {
-			// avoid duplicates
-			if ( ! in_array($move->ending_square->alphanumeric, $squares_attacked) ) {
-				array_push($squares_attacked, $move->ending_square->alphanumeric);
-			}
+		foreach ( $legal_moves_for_attacker as $key => $move ) {
+			// It's quicker to just keep the duplicates. They don't hurt anything.
+			array_push($squares_attacked, $move->ending_square->alphanumeric);
 		}
 		
 		return $squares_attacked;
