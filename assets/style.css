@@ -1,0 +1,81 @@
+
+body {
+	font-family:sans-serif;
+}
+
+input[name="fen"] {
+	width: 550px;
+}
+
+input[type="submit"],
+input[type="button"] {
+	font-size: 12pt;
+}
+
+textarea[name="pgn"] {
+	width: 500px;
+	font-family: sans-serif;
+}
+
+select[name="move"] {
+	width: 8em;
+}
+
+.two_columns {
+	display: flex;
+	width: 600px;
+}
+
+.two_columns>div:nth-child(1) {
+	flex: 60%;
+}
+
+.two_columns>div:nth-child(2) {
+	flex: 40%;
+}
+
+#graphical_board {
+	table-layout: fixed;
+	border-collapse: collapse;
+}
+
+#graphical_board td {
+	height: 40px;
+	width: 40px;
+	padding: 0;
+	margin: 0;
+	text-align: center;
+	vertical-align: middle;
+	font-size: 30px;
+	font-weight: bold;
+	font-family: "Arial Unicode MS", "Lucida Console", Courier, monospace;
+	cursor: move;
+}
+
+.black {
+	background-color: #769656;
+}
+
+.white {
+	background-color: #EEEED2;
+}
+
+.status_box {
+	background-color: #F0F0F0;
+	border: 1px solid black;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-left: 4px;
+	padding-right: 4px;
+	width: 310px;
+	margin-bottom: 5px;
+}
+
+table {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+td, th {
+	border: 1px solid black;
+}
