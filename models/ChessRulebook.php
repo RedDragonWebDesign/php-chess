@@ -411,7 +411,14 @@ class ChessRulebook {
 	
 	
 	static function add_en_passant_moves_to_moves_list($piece, $board, $moves, $store_board_in_moves) {
-		// TODO: Move these to constants called EN_PASSANT_RULES_WHITE and EN_PASSANT_RULES_BLACK
+		// This occurs often, so put it on top.
+		if ( ! $board->en_passant_target_square ) {
+			return $moves;
+		}
+		
+		// I tried moving these into a constant called EN_PASSANT_RULES[color][property].
+		// It was actually slower! I still had to use variables to make the code readable, plus
+		// it was a two level array. Boo.
 		if ( $piece->color == 'white' ) {
 			$capture_directions_from_starting_square = array('northeast', 'northwest');
 			$enemy_pawn_direction_from_ending_square = array('south');
@@ -422,27 +429,32 @@ class ChessRulebook {
 			$en_passant_rank = 4;
 		}
 		
-		if ( $piece->on_rank($en_passant_rank) && $board->en_passant_target_square ) {
-			$squares_to_check = self::get_squares_in_these_directions($piece->square, $capture_directions_from_starting_square, 1);
-			foreach ( $squares_to_check as $key => $square ) {
-				if ( $square->alphanumeric == $board->en_passant_target_square->alphanumeric ) {
-					$move = new ChessMove(
-						$piece->square,
-						$square,
-						$piece->color,
-						$piece->type,
-						TRUE,
-						$board,
-						$store_board_in_moves
-					);
-					$move->en_passant = TRUE;
-					if ( $store_board_in_moves ) {
-						$enemy_pawn_square = self::get_squares_in_these_directions($square, $enemy_pawn_direction_from_ending_square, 1);
-						$move->board->remove_piece_from_square($enemy_pawn_square[0]);
-					}
-					array_push($moves, $move);
-				}
+		if ( ! $piece->on_rank($en_passant_rank) ) {
+			return $moves;
+		}
+		
+		$squares_to_check = self::get_squares_in_these_directions($piece->square, $capture_directions_from_starting_square, 1);
+		
+		foreach ( $squares_to_check as $key => $square ) {
+			if ( $square->alphanumeric != $board->en_passant_target_square->alphanumeric ) {
+				continue;
 			}
+			
+			$move = new ChessMove(
+				$piece->square,
+				$square,
+				$piece->color,
+				$piece->type,
+				TRUE,
+				$board,
+				$store_board_in_moves
+			);
+			$move->en_passant = TRUE;
+			if ( $store_board_in_moves ) {
+				$enemy_pawn_square = self::get_squares_in_these_directions($square, $enemy_pawn_direction_from_ending_square, 1);
+				$move->board->remove_piece_from_square($enemy_pawn_square[0]);
+			}
+			array_push($moves, $move);
 		}
 		
 		return $moves;
