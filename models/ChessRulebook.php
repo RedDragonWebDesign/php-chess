@@ -191,8 +191,6 @@ class ChessRulebook {
 	
 	static function add_slide_and_slidecapture_moves_to_moves_list($directions_list, $spaces, $moves, $piece, $color_to_move, $board, $store_board_in_moves) {
 		foreach ( $directions_list as $key => $direction ) {
-			$legal_move_list = array();
-			
 			for ( $i = 1; $i <= $spaces; $i++ ) {
 				$current_xy = self::DIRECTION_OFFSETS[$direction];
 				$current_xy[0] *= $i;
@@ -220,7 +218,7 @@ class ChessRulebook {
 					}
 				}
 				
-				array_push($legal_move_list, new ChessMove(
+				array_push($moves, new ChessMove(
 					$piece->square,
 					$ending_square,
 					$piece->color,
@@ -239,10 +237,6 @@ class ChessRulebook {
 				// continue sliding
 				// continue;
 			}
-			
-			foreach ( $legal_move_list as $key2 => $value2 ) {
-				array_push($moves, $value2);
-			}
 		}
 		
 		return $moves;
@@ -250,8 +244,6 @@ class ChessRulebook {
 	
 	static function add_capture_moves_to_moves_list($directions_list, $moves, $piece, $color_to_move, $board, $store_board_in_moves) {
 		foreach ( $directions_list as $key => $direction ) {
-			$legal_move_list = array();
-			
 			$current_xy = self::DIRECTION_OFFSETS[$direction];
 			
 			$ending_square = self::square_exists_and_not_occupied_by_friendly_piece(
@@ -289,16 +281,12 @@ class ChessRulebook {
 						foreach ( self::PROMOTION_PIECES as $key => $type ) {
 							$move2 = clone $move;
 							$move2->set_promotion_piece($type);
-							array_push($legal_move_list, $move2);
+							array_push($moves, $move2);
 						}
 					} else {
-						array_push($legal_move_list, $move);
+						array_push($moves, $move);
 					}
 				}
-			}
-			
-			foreach ( $legal_move_list as $key2 => $value2 ) {
-				array_push($moves, $value2);
 			}
 		}
 		
@@ -307,8 +295,6 @@ class ChessRulebook {
 	
 	static function add_slide_moves_to_moves_list($directions_list, $spaces, $moves, $piece, $color_to_move, $board, $store_board_in_moves) {
 		foreach ( $directions_list as $key => $direction ) {
-			$legal_move_list = array();
-			
 			for ( $i = 1; $i <= $spaces; $i++ ) {
 				$current_xy = self::DIRECTION_OFFSETS[$direction];
 				$current_xy[0] *= $i;
@@ -365,19 +351,15 @@ class ChessRulebook {
 					foreach ( self::PROMOTION_PIECES as $key => $type ) {
 						$move2 = clone $new_move;
 						$move2->set_promotion_piece($type);
-						array_push($legal_move_list, $move2);
+						array_push($moves, $move2);
 					}
 				} else {
-					array_push($legal_move_list, $new_move);
+					array_push($moves, $new_move);
 				}
 					
 				// empty square
 				// continue sliding
 				// continue;
-			}
-			
-			foreach ( $legal_move_list as $key2 => $value2 ) {
-				array_push($moves, $value2);
 			}
 		}
 		
@@ -386,8 +368,6 @@ class ChessRulebook {
 	
 	static function set_en_passant_target_square($piece, $color_to_move, $board, $new_move, $direction) {
 		$en_passant_xy = self::DIRECTION_OFFSETS[$direction];
-		$en_passant_xy[0] *= 1;
-		$en_passant_xy[1] *= 1;
 		
 		$en_passant_target_square = self::square_exists_and_not_occupied_by_friendly_piece(
 			$piece->square,
@@ -410,8 +390,6 @@ class ChessRulebook {
 				$board
 			);
 			
-			$legal_move_list = array();
-			
 			if ( $ending_square ) {
 				$capture = FALSE;
 				
@@ -422,7 +400,7 @@ class ChessRulebook {
 					}
 				}
 				
-				array_push($legal_move_list, new ChessMove(
+				array_push($moves, new ChessMove(
 					$piece->square,
 					$ending_square,
 					$piece->color,
@@ -431,10 +409,6 @@ class ChessRulebook {
 					$board,
 					$store_board_in_moves
 				));
-			}
-			
-			foreach ( $legal_move_list as $key2 => $value2 ) {
-				array_push($moves, $value2);
 			}
 		}
 		
@@ -561,8 +535,6 @@ class ChessRulebook {
 			),
 		);
 		
-		$legal_move_list = array();
-		
 		foreach ( $castling_rules as $key => $value ) {
 			// only check castling for current color_to_move
 			if ( $value['color_to_move'] != $board->color_to_move ) {
@@ -607,7 +579,7 @@ class ChessRulebook {
 			}
 			
 			// The ChessMove class handles displaying castling notation, taking castling privileges out of the FEN, and moving the rook into the right place on the board. No need to do anything extra here.
-			array_push($legal_move_list, new ChessMove(
+			array_push($moves, new ChessMove(
 				$piece->square,
 				$value['king_end_square'],
 				$piece->color,
@@ -615,10 +587,6 @@ class ChessRulebook {
 				FALSE,
 				$board
 			));
-		}
-		
-		foreach ( $legal_move_list as $key2 => $value2 ) {
-			array_push($moves, $value2);
 		}
 		
 		return $moves;
