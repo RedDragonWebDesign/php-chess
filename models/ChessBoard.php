@@ -392,10 +392,7 @@ class ChessBoard {
 		
 		$is_capture = $this->board[$new_square->rank][$new_square->file];
 		
-		if (
-			$moving_piece->type == 'pawn' ||
-			$is_capture
-		) {
+		if ( $moving_piece->type == 'pawn' || $is_capture ) {
 			$this->halfmove_clock = 0;
 		} else {
 			$this->halfmove_clock++;
