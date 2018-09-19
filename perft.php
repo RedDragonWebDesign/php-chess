@@ -19,6 +19,7 @@ if ( isset($_GET['fen']) ) {
 $fen = $board->export_fen();
 
 const PERFT_DEPTH = 2;
+const COUNT_CHECKS_AND_CHECKMATES = FALSE;
 $data = array();
 
 $legal_moves[0][0] = new ChessMove(NULL, NULL, NULL, NULL, NULL, $board);
@@ -36,12 +37,17 @@ for ( $depth = 1; $depth <= PERFT_DEPTH; $depth++ ) {
 	$data[$depth]['en_passants'] = 0;
 	$data[$depth]['castles'] = 0;
 	$data[$depth]['promotions'] = 0;
-	$data[$depth]['checks'] = 0;
-	$data[$depth]['checkmates'] = 0;
+	if ( COUNT_CHECKS_AND_CHECKMATES ) {
+		$data[$depth]['checks'] = 0;
+		$data[$depth]['checkmates'] = 0;
+	} else {
+		$data[$depth]['checks'] = '';
+		$data[$depth]['checkmates'] = '';
+	}
 	
 	$legal_moves[$depth] = array();
 	foreach ( $legal_moves[$depth - 1] as $key => $move ) {
-		$legal_moves_list = ChessRulebook::get_legal_moves_list($move->board->color_to_move, $move->board);
+		$legal_moves_list = ChessRulebook::get_legal_moves_list($move->board->color_to_move, $move->board, TRUE, TRUE, COUNT_CHECKS_AND_CHECKMATES);
 		$move_trees_generated++;
 		foreach ( $legal_moves_list as $key2 => $move2 ) {
 			array_push($legal_moves[$depth], $move2);
@@ -64,13 +70,16 @@ for ( $depth = 1; $depth <= PERFT_DEPTH; $depth++ ) {
 				$data[$depth]['promotions']++;
 			}
 			
-			if ( $move2->check ) {
-				$data[$depth]['checks']++;
+			if ( COUNT_CHECKS_AND_CHECKMATES ) {
+				if ( $move2->check ) {
+					$data[$depth]['checks']++;
+				}
+				
+				if ( $move2->checkmate ) {
+					$data[$depth]['checkmates']++;
+				}
 			}
-			
-			if ( $move2->checkmate ) {
-				$data[$depth]['checkmates']++;
-			}}
+		}
 	}
 	unset($legal_moves[$depth - 1]);
 }
