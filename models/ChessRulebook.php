@@ -171,38 +171,38 @@ class ChessRulebook {
 					$board
 				);
 				
-				if ( $ending_square ) {
-					$capture = FALSE;
-					
-					if ( $board->board[$ending_square->rank][$ending_square->file] ) {
-						if ( $board->board[$ending_square->rank][$ending_square->file]->color != $color_to_move ) {
-							$capture = TRUE;
-						}
-					}
-					
-					array_push($legal_move_list, new ChessMove(
-						$piece->square,
-						$ending_square,
-						$piece->color,
-						$piece->type,
-						$capture,
-						$board,
-						$store_board_in_moves
-					));
-					
-					if ( $capture ) {
-						// stop sliding
-						break;
-					} else {
-						// empty square
-						// continue sliding
-						continue;
-					}
-				} else {
+				if ( ! $ending_square ) {
 					// square does not exist, or square occupied by friendly piece
 					// stop sliding
 					break;
 				}
+				
+				$capture = FALSE;
+				
+				if ( $board->board[$ending_square->rank][$ending_square->file] ) {
+					if ( $board->board[$ending_square->rank][$ending_square->file]->color != $color_to_move ) {
+						$capture = TRUE;
+					}
+				}
+				
+				array_push($legal_move_list, new ChessMove(
+					$piece->square,
+					$ending_square,
+					$piece->color,
+					$piece->type,
+					$capture,
+					$board,
+					$store_board_in_moves
+				));
+				
+				if ( $capture ) {
+					// stop sliding
+					break;
+				}
+
+				// empty square
+				// continue sliding
+				// continue;
 			}
 			
 			foreach ( $legal_move_list as $key2 => $value2 ) {
@@ -250,9 +250,7 @@ class ChessRulebook {
 					// pawn promotion
 					$white_pawn_capturing_on_rank_8 = $piece->type == "pawn" && $ending_square->rank == 8 && $piece->color == "white";
 					$black_pawn_capturing_on_rank_1 = $piece->type == "pawn" && $ending_square->rank == 1 && $piece->color == "black";
-					if (
-						$white_pawn_capturing_on_rank_8 || $black_pawn_capturing_on_rank_1
-					) {
+					if ( $white_pawn_capturing_on_rank_8 || $black_pawn_capturing_on_rank_1 ) {
 						foreach ( self::PROMOTION_PIECES as $key => $type ) {
 							$move2 = clone $move;
 							$move2->set_promotion_piece($type);
@@ -289,76 +287,77 @@ class ChessRulebook {
 					$board
 				);
 				
-				if ( $ending_square ) {
-					$capture = FALSE;
-					
-					if ( $board->board[$ending_square->rank][$ending_square->file] ) {
-						if ( $board->board[$ending_square->rank][$ending_square->file]->color != $color_to_move ) {
-							$capture = TRUE;
-						}
-					}
-					
-					if ( $capture ) {
-						// enemy piece in square
-						// stop sliding
-						break;
-					} else {
-						$new_move = new ChessMove(
-							$piece->square,
-							$ending_square,
-							$piece->color,
-							$piece->type,
-							$capture,
-							$board,
-							$store_board_in_moves
-						);
-						
-						// en passant target square
-						if (
-							$piece->type == 'pawn' &&
-							$i == 2
-						) {
-							$en_passant_xy = self::DIRECTION_OFFSETS[$direction];
-							$en_passant_xy[0] *= 1;
-							$en_passant_xy[1] *= 1;
-							
-							$en_passant_target_square = self::square_exists_and_not_occupied_by_friendly_piece(
-								$piece->square,
-								$en_passant_xy[0],
-								$en_passant_xy[1],
-								$color_to_move,
-								$board
-							);
-							
-							if ($store_board_in_moves ) {
-								$new_move->board->en_passant_target_square = $en_passant_target_square;
-							}
-						}
-						
-						// pawn promotion
-						$white_pawn_moving_to_rank_8 = $piece->type == "pawn" && $ending_square->rank == 8 && $piece->color == "white";
-						$black_pawn_moving_to_rank_1 = $piece->type == "pawn" && $ending_square->rank == 1 && $piece->color == "black";
-						if (
-							$white_pawn_moving_to_rank_8 || $black_pawn_moving_to_rank_1
-						) {
-							foreach ( self::PROMOTION_PIECES as $key => $type ) {
-								$move2 = clone $new_move;
-								$move2->set_promotion_piece($type);
-								array_push($legal_move_list, $move2);
-							}
-						} else {
-							array_push($legal_move_list, $new_move);
-						}
-						
-						// empty square
-						// continue sliding
-						continue;
-					}
-				} else {
+				if ( ! $ending_square ) {
 					// square does not exist, or square occupied by friendly piece
 					// stop sliding
 					break;
 				}
+				
+
+				$capture = FALSE;
+				
+				if ( $board->board[$ending_square->rank][$ending_square->file] ) {
+					if ( $board->board[$ending_square->rank][$ending_square->file]->color != $color_to_move ) {
+						$capture = TRUE;
+					}
+				}
+				
+				if ( $capture ) {
+					// enemy piece in square
+					// stop sliding
+					break;
+				}
+				
+				$new_move = new ChessMove(
+					$piece->square,
+					$ending_square,
+					$piece->color,
+					$piece->type,
+					$capture,
+					$board,
+					$store_board_in_moves
+				);
+				
+				// en passant target square
+				if (
+					$piece->type == 'pawn' &&
+					$i == 2
+				) {
+					$en_passant_xy = self::DIRECTION_OFFSETS[$direction];
+					$en_passant_xy[0] *= 1;
+					$en_passant_xy[1] *= 1;
+					
+					$en_passant_target_square = self::square_exists_and_not_occupied_by_friendly_piece(
+						$piece->square,
+						$en_passant_xy[0],
+						$en_passant_xy[1],
+						$color_to_move,
+						$board
+					);
+					
+					if ($store_board_in_moves ) {
+						$new_move->board->en_passant_target_square = $en_passant_target_square;
+					}
+				}
+				
+				// pawn promotion
+				$white_pawn_moving_to_rank_8 = $piece->type == "pawn" && $ending_square->rank == 8 && $piece->color == "white";
+				$black_pawn_moving_to_rank_1 = $piece->type == "pawn" && $ending_square->rank == 1 && $piece->color == "black";
+				if (
+					$white_pawn_moving_to_rank_8 || $black_pawn_moving_to_rank_1
+				) {
+					foreach ( self::PROMOTION_PIECES as $key => $type ) {
+						$move2 = clone $new_move;
+						$move2->set_promotion_piece($type);
+						array_push($legal_move_list, $move2);
+					}
+				} else {
+					array_push($legal_move_list, $new_move);
+				}
+					
+				// empty square
+				// continue sliding
+				// continue;
 			}
 			
 			foreach ( $legal_move_list as $key2 => $value2 ) {
