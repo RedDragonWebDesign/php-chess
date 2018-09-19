@@ -21,9 +21,8 @@ $fen = $board->export_fen();
 const PERFT_DEPTH = 2;
 const COUNT_CHECKS_AND_CHECKMATES = FALSE;
 $data = array();
-
-$legal_moves[0][0] = new ChessMove(NULL, NULL, NULL, NULL, NULL, $board);
 $move_trees_generated = 0;
+$legal_moves[0][0] = new ChessMove(NULL, NULL, NULL, NULL, NULL, $board);
 
 $time = microtime();
 $time = explode(' ', $time);
