@@ -135,17 +135,17 @@ class ChessRulebook {
 		if ( $need_perfect_notation ) {
 			// TODO: Move notation - disambiguate vague starting squares
 			// foreach $moves as $key => $move
-			// if $move->piece->type == queen, rook, knight, bishop
-			// $pieces_on_same_rank
-			// $pieces_on_same_file
-			// if ( $pieces_on_same_rank > 1 && $pieces_on_same_file > 1 )
-			// $move->disambiguation = columnrow;
-			// elseif ( $pieces_on_same_rank > 1 )
-			// $move->disambiguation = row);
-			// elseif ( $pieces_on_same_column > 1 )
-			// $move->disambiguation = column;
+				// if $move->piece->type == queen, rook, knight, bishop
+					// $pieces_on_same_rank
+					// $pieces_on_same_file
+					// if ( $pieces_on_same_rank > 1 && $pieces_on_same_file > 1 )
+						// $move->disambiguation = columnrow;
+					// elseif ( $pieces_on_same_rank > 1 )
+						// $move->disambiguation = row);
+					// elseif ( $pieces_on_same_column > 1 )
+						// $move->disambiguation = column;
 			
-			// if move puts enemy king in check, tell the $move object so it can add a + to the notation
+			// if move puts enemy king in check/checkmate, tell the $move object so it can add a +/# to the notation
 			self::mark_checks_and_checkmates($moves, $color_to_move);
 			
 			// TODO: alphabetize
@@ -156,9 +156,6 @@ class ChessRulebook {
 	
 	static function add_slide_and_slidecapture_moves_to_moves_list($directions_list, $spaces, $moves, $piece, $color_to_move, $board, $store_board_in_moves) {
 		foreach ( $directions_list as $key => $direction ) {
-			// $spaces should be 1 for king, 1 or 2 for pawns, 7 for all other sliding pieces
-			// 7 is the max # of squares you can slide on a chessboard
-
 			$legal_move_list = array();
 			
 			for ( $i = 1; $i <= $spaces; $i++ ) {
@@ -277,9 +274,6 @@ class ChessRulebook {
 	
 	static function add_slide_moves_to_moves_list($directions_list, $spaces, $moves, $piece, $color_to_move, $board, $store_board_in_moves) {
 		foreach ( $directions_list as $key => $direction ) {
-			// $spaces should be 1 for king, 1 or 2 for pawns, 7 for all other sliding pieces
-			// 7 is the max # of squares you can slide on a chessboard
-
 			$legal_move_list = array();
 			
 			for ( $i = 1; $i <= $spaces; $i++ ) {
