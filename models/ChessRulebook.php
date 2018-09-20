@@ -156,7 +156,7 @@ class ChessRulebook {
 			$ending_squares = array();
 			foreach ( $moves as $key => $move ) {
 				if ( $move->piece_type == $type ) {
-					array_push($ending_squares, $move->ending_square->alphanumeric);
+					array_push($ending_squares, $move->ending_square->get_alphanumeric());
 				}
 			}
 			
@@ -168,7 +168,7 @@ class ChessRulebook {
 					continue;
 				}
 				
-				if ( ! in_array($move->ending_square->alphanumeric, $duplicates) ) {
+				if ( ! in_array($move->ending_square->get_alphanumeric(), $duplicates) ) {
 					continue;
 				}
 				
@@ -179,7 +179,7 @@ class ChessRulebook {
 					// TODO: This isn't perfect. If queens on a8, c8, a6, the move Q8a7 will display as
 					// Qa8a7, even though the queen on c8 can't move there. To fix, we probably have to
 					// generate a legal move list for each piece.
-					$move->disambiguation = $move->starting_square->alphanumeric;
+					$move->disambiguation = $move->starting_square->get_alphanumeric();
 				} elseif ( $pieces_on_same_rank > 1 ) {
 					$move->disambiguation = $move->starting_square->get_file_letter();
 				} elseif ( $pieces_on_same_file > 1 ) {
@@ -442,7 +442,7 @@ class ChessRulebook {
 		$squares_to_check = self::get_squares_in_these_directions($piece->square, $capture_directions_from_starting_square, 1);
 		
 		foreach ( $squares_to_check as $key => $square ) {
-			if ( $square->alphanumeric != $board->en_passant_target_square->alphanumeric ) {
+			if ( $square->get_alphanumeric() != $board->en_passant_target_square->get_alphanumeric() ) {
 				continue;
 			}
 			
@@ -551,7 +551,7 @@ class ChessRulebook {
 			$enemy_color = self::invert_color($board->color_to_move);
 			$squares_attacked_by_enemy = self::get_squares_attacked_by_this_color($enemy_color, $board);
 			foreach ( $value['cannot_be_attacked'] as $key2 => $square_to_check ) {
-				if ( in_array($square_to_check->alphanumeric, $squares_attacked_by_enemy) ) {
+				if ( in_array($square_to_check->get_alphanumeric(), $squares_attacked_by_enemy) ) {
 					continue 2;
 				}
 			}
@@ -600,7 +600,7 @@ class ChessRulebook {
 			
 			$squares_attacked_by_moving_side = self::get_squares_attacked_by_this_color($color_to_move, $move->board);
 			
-			if ( in_array($enemy_king_square->alphanumeric, $squares_attacked_by_moving_side) ) {
+			if ( in_array($enemy_king_square->get_alphanumeric(), $squares_attacked_by_moving_side) ) {
 				$move->check = TRUE;
 				
 				$legal_moves_for_enemy = self::get_legal_moves_list($enemy_color, $move->board, TRUE, TRUE, FALSE);
@@ -625,7 +625,7 @@ class ChessRulebook {
 			
 			$squares_attacked_by_enemy = self::get_squares_attacked_by_this_color($enemy_color, $move->board);
 			
-			if ( ! in_array($friendly_king_square->alphanumeric, $squares_attacked_by_enemy) ) {
+			if ( ! in_array($friendly_king_square->get_alphanumeric(), $squares_attacked_by_enemy) ) {
 				array_push($new_moves, $move);
 			}
 		}
@@ -695,7 +695,7 @@ class ChessRulebook {
 		$squares_attacked = array();
 		foreach ( $legal_moves_for_attacker as $key => $move ) {
 			// It's quicker to just keep the duplicates. They don't hurt anything.
-			array_push($squares_attacked, $move->ending_square->alphanumeric);
+			array_push($squares_attacked, $move->ending_square->get_alphanumeric());
 		}
 		
 		return $squares_attacked;

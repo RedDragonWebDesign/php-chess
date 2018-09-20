@@ -252,7 +252,7 @@ class ChessBoard {
 		}
 		
 		if ( $this->en_passant_target_square ) {
-			$string .= " " . $this->en_passant_target_square->alphanumeric;
+			$string .= " " . $this->en_passant_target_square->get_alphanumeric();
 		} else {
 			$string .= " -";
 		}

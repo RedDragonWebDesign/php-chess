@@ -58,21 +58,21 @@ class ChessMove {
 	function possibly_remove_our_castling_privileges() {
 		// if our king or rook moves update the FEN to take away our castling privileges
 		if ( $this->color == ChessPiece::BLACK ) {
-			if ( $this->piece_type == ChessPiece::KING && $this->starting_square->alphanumeric == 'e8' ) {
+			if ( $this->piece_type == ChessPiece::KING && $this->starting_square->get_alphanumeric() == 'e8' ) {
 				$this->board->castling['black_can_castle_kingside'] = FALSE;
 				$this->board->castling['black_can_castle_queenside'] = FALSE;
-			} elseif ( $this->piece_type == ChessPiece::ROOK && $this->starting_square->alphanumeric == 'a8' ) {
+			} elseif ( $this->piece_type == ChessPiece::ROOK && $this->starting_square->get_alphanumeric() == 'a8' ) {
 				$this->board->castling['black_can_castle_queenside'] = FALSE;
-			} elseif ( $this->piece_type == ChessPiece::ROOK && $this->starting_square->alphanumeric == 'h8' ) {
+			} elseif ( $this->piece_type == ChessPiece::ROOK && $this->starting_square->get_alphanumeric() == 'h8' ) {
 				$this->board->castling['black_can_castle_kingside'] = FALSE;
 			}
 		} elseif ( $this->color == ChessPiece::WHITE ) {
-			if ( $this->piece_type == ChessPiece::KING && $this->starting_square->alphanumeric == 'e1' ) {
+			if ( $this->piece_type == ChessPiece::KING && $this->starting_square->get_alphanumeric() == 'e1' ) {
 				$this->board->castling['white_can_castle_kingside'] = FALSE;
 				$this->board->castling['white_can_castle_queenside'] = FALSE;
-			} elseif ( $this->piece_type == ChessPiece::ROOK && $this->starting_square->alphanumeric == 'a1' ) {
+			} elseif ( $this->piece_type == ChessPiece::ROOK && $this->starting_square->get_alphanumeric() == 'a1' ) {
 				$this->board->castling['white_can_castle_queenside'] = FALSE;
-			} elseif ( $this->piece_type == ChessPiece::ROOK && $this->starting_square->alphanumeric == 'h1' ) {
+			} elseif ( $this->piece_type == ChessPiece::ROOK && $this->starting_square->get_alphanumeric() == 'h1' ) {
 				$this->board->castling['white_can_castle_kingside'] = FALSE;
 			}
 		}
@@ -83,15 +83,15 @@ class ChessMove {
 		// We'll keep it simple. Anytime a piece moves into a corner square (a1, a8, h1, h8),
 		// remove the other side's castling privileges.
 		if ( $this->color == ChessPiece::BLACK ) {
-			if ( $this->ending_square->alphanumeric == 'a1' ) {
+			if ( $this->ending_square->get_alphanumeric() == 'a1' ) {
 				$this->board->castling['white_can_castle_queenside'] = FALSE;
-			} elseif ( $this->ending_square->alphanumeric == 'h1' ) {
+			} elseif ( $this->ending_square->get_alphanumeric() == 'h1' ) {
 				$this->board->castling['white_can_castle_kingside'] = FALSE;
 			}
 		} elseif ( $this->color == ChessPiece::WHITE ) {
-			if ( $this->ending_square->alphanumeric == 'a8' ) {
+			if ( $this->ending_square->get_alphanumeric() == 'a8' ) {
 				$this->board->castling['black_can_castle_queenside'] = FALSE;
-			} elseif ( $this->ending_square->alphanumeric == 'h8' ) {
+			} elseif ( $this->ending_square->get_alphanumeric() == 'h8' ) {
 				$this->board->castling['black_can_castle_kingside'] = FALSE;
 			}
 		}
@@ -103,8 +103,8 @@ class ChessMove {
 		if ( $this->color == ChessPiece::BLACK ) {
 			if (
 				$this->piece_type == ChessPiece::KING &&
-				$this->starting_square->alphanumeric == 'e8' &&
-				$this->ending_square->alphanumeric == 'g8'
+				$this->starting_square->get_alphanumeric() == 'e8' &&
+				$this->ending_square->get_alphanumeric() == 'g8'
 			) {
 				$starting_square = new ChessSquare('h8');
 				$ending_square = new ChessSquare('f8');
@@ -112,8 +112,8 @@ class ChessMove {
 				$this->castling = TRUE;
 			} elseif (
 				$this->piece_type == ChessPiece::KING &&
-				$this->starting_square->alphanumeric == 'e8' &&
-				$this->ending_square->alphanumeric == 'c8'
+				$this->starting_square->get_alphanumeric() == 'e8' &&
+				$this->ending_square->get_alphanumeric() == 'c8'
 			) {
 				$starting_square = new ChessSquare('a8');
 				$ending_square = new ChessSquare('d8');
@@ -123,8 +123,8 @@ class ChessMove {
 		} elseif ( $this->color == ChessPiece::WHITE ) {
 			if (
 				$this->piece_type == ChessPiece::KING &&
-				$this->starting_square->alphanumeric == 'e1' &&
-				$this->ending_square->alphanumeric == 'g1'
+				$this->starting_square->get_alphanumeric() == 'e1' &&
+				$this->ending_square->get_alphanumeric() == 'g1'
 			) {
 				$starting_square = new ChessSquare('h1');
 				$ending_square = new ChessSquare('f1');
@@ -132,8 +132,8 @@ class ChessMove {
 				$this->castling = TRUE;
 			} elseif (
 				$this->piece_type == ChessPiece::KING &&
-				$this->starting_square->alphanumeric == 'e1' &&
-				$this->ending_square->alphanumeric == 'c1'
+				$this->starting_square->get_alphanumeric() == 'e1' &&
+				$this->ending_square->get_alphanumeric() == 'c1'
 			) {
 				$starting_square = new ChessSquare('a1');
 				$ending_square = new ChessSquare('d1');
@@ -168,29 +168,29 @@ class ChessMove {
 		$string = '';
 		
 		if (
-			$this->starting_square->alphanumeric == 'e8' &&
-			$this->ending_square->alphanumeric == 'g8' &&
+			$this->starting_square->get_alphanumeric() == 'e8' &&
+			$this->ending_square->get_alphanumeric() == 'g8' &&
 			$this->piece_type == ChessPiece::KING &&
 			$this->color = ChessPiece::BLACK
 		) {
 			$string .= 'O-O';
 		} elseif (
-			$this->starting_square->alphanumeric == 'e1' &&
-			$this->ending_square->alphanumeric == 'g1' &&
+			$this->starting_square->get_alphanumeric() == 'e1' &&
+			$this->ending_square->get_alphanumeric() == 'g1' &&
 			$this->piece_type == ChessPiece::KING &&
 			$this->color = ChessPiece::WHITE
 		) {
 			$string .= 'O-O';
 		} elseif (
-			$this->starting_square->alphanumeric == 'e8' &&
-			$this->ending_square->alphanumeric == 'c8' &&
+			$this->starting_square->get_alphanumeric() == 'e8' &&
+			$this->ending_square->get_alphanumeric() == 'c8' &&
 			$this->piece_type == ChessPiece::KING &&
 			$this->color = ChessPiece::BLACK
 		) {
 			$string .= 'O-O-O';
 		} elseif (
-			$this->starting_square->alphanumeric == 'e1' &&
-			$this->ending_square->alphanumeric == 'c1' &&
+			$this->starting_square->get_alphanumeric() == 'e1' &&
+			$this->ending_square->get_alphanumeric() == 'c1' &&
 			$this->piece_type == ChessPiece::KING &&
 			$this->color = ChessPiece::WHITE
 		) {
@@ -198,7 +198,7 @@ class ChessMove {
 		} else {
 			// type of piece
 			if ( $this->piece_type == ChessPiece::PAWN && $this->capture ) {
-				$string .= substr($this->starting_square->alphanumeric, 0, 1);
+				$string .= substr($this->starting_square->get_alphanumeric(), 0, 1);
 			} elseif ( $this->piece_type != ChessPiece::PAWN ) {
 				$string .= strtoupper(self::PIECE_LETTERS[$this->piece_type]);
 			}
@@ -212,7 +212,7 @@ class ChessMove {
 			}
 			
 			// destination square
-			$string .= $this->ending_square->alphanumeric;
+			$string .= $this->ending_square->get_alphanumeric();
 			
 			// en passant
 			if ( $this->en_passant ) {
@@ -250,7 +250,7 @@ class ChessMove {
 		) {
 			return "";
 		} else {		
-			return $this->starting_square->alphanumeric . $this->ending_square->alphanumeric;
+			return $this->starting_square->get_alphanumeric() . $this->ending_square->get_alphanumeric();
 		}
 	}
 }

@@ -28,25 +28,22 @@ class ChessSquare {
 	// it's actually slower than calculating them in the constructor!
 	public $rank;
 	public $file;
-	public $alphanumeric;
 	
 	function __construct() {
 		$args = func_get_args();
 		
 		// __construct($alphanumeric) - 1%
 		if ( count($args) == 1 ) {
-			$this->alphanumeric = $args[0];
-			$this->set_rankfile_using_alphanumeric($this->alphanumeric);
+			$this->set_rankfile_using_alphanumeric($args[0]);
 		// __construct($rank, $file) - 99%
 		} else {
 			$this->rank = $args[0];
 			$this->file = $args[1];
-			$this->set_alphanumeric_using_rankfile($this->rank, $this->file);
 		}
 	}
 	
-	function set_alphanumeric_using_rankfile($rank, $file) {
-		$this->alphanumeric = self::FILE_NUMS_AND_LETTERS[$file] . $rank;
+	function calculate_alphanumeric_using_rankfile($rank, $file) {
+		return self::FILE_NUMS_AND_LETTERS[$file] . $rank;
 	}
 	
 	function set_rankfile_using_alphanumeric($alphanumeric) {
@@ -56,5 +53,9 @@ class ChessSquare {
 	
 	function get_file_letter() {
 		return self::FILE_NUMS_AND_LETTERS[$this->file];
+	}
+	
+	function get_alphanumeric() {
+		return $this->calculate_alphanumeric_using_rankfile($this->rank, $this->file);
 	}
 }
