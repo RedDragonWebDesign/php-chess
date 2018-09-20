@@ -551,7 +551,7 @@ class ChessRulebook {
 			$enemy_color = self::invert_color($board->color_to_move);
 			$squares_attacked_by_enemy = self::get_squares_attacked_by_this_color($enemy_color, $board);
 			foreach ( $value['cannot_be_attacked'] as $key2 => $square_to_check ) {
-				if ( in_array($square_to_check->get_alphanumeric(), $squares_attacked_by_enemy) ) {
+				if ( in_array($square_to_check->get_int(), $squares_attacked_by_enemy) ) {
 					continue 2;
 				}
 			}
