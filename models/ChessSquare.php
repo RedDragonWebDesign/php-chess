@@ -58,4 +58,10 @@ class ChessSquare {
 	function get_alphanumeric() {
 		return $this->calculate_alphanumeric_using_rankfile($this->rank, $this->file);
 	}
+	
+	function get_int() {
+		// Primitive type int is faster than alphanumeric or ChessSquare for storing the
+		// chess square in a list.
+		return (int)($this->rank . $this->file);
+	}
 }

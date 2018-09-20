@@ -625,7 +625,7 @@ class ChessRulebook {
 			
 			$squares_attacked_by_enemy = self::get_squares_attacked_by_this_color($enemy_color, $move->board);
 			
-			if ( ! in_array($friendly_king_square->get_alphanumeric(), $squares_attacked_by_enemy) ) {
+			if ( ! in_array($friendly_king_square->get_int(), $squares_attacked_by_enemy) ) {
 				array_push($new_moves, $move);
 			}
 		}
@@ -695,7 +695,7 @@ class ChessRulebook {
 		$squares_attacked = array();
 		foreach ( $legal_moves_for_attacker as $key => $move ) {
 			// It's quicker to just keep the duplicates. They don't hurt anything.
-			array_push($squares_attacked, $move->ending_square->get_alphanumeric());
+			array_push($squares_attacked, $move->ending_square->get_int());
 		}
 		
 		return $squares_attacked;
