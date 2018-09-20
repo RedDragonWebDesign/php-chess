@@ -62,10 +62,10 @@ class ChessRulebook {
 	const WHITE_PAWN_MOVEMENT_DIRECTIONS = array('north');
 	
 	const PROMOTION_PIECES = array(
-		QUEEN,
-		ROOK,
-		BISHOP,
-		KNIGHT
+		ChessPiece::QUEEN,
+		ChessPiece::ROOK,
+		ChessPiece::BISHOP,
+		ChessPiece::KNIGHT
 	);
 	
 	static function get_legal_moves_list(
