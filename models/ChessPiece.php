@@ -62,7 +62,7 @@ class ChessPiece
 			self::QUEEN => 'q',
 			self::ROOK => 'r',
 			self::BISHOP => 'b',
-			self::KNIGHT => 'k',
+			self::KNIGHT => 'n',
 			self::PAWN => 'p'
 		)
 	);
