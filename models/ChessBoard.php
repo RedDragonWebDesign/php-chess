@@ -2,12 +2,12 @@
 
 class ChessBoard {
 	const PIECE_LETTERS = array(
-		'p' => 'pawn',
-		'n' => 'knight',
-		'b' => 'bishop',
-		'r' => 'rook',
-		'q' => 'queen',
-		'k' => 'king'
+		'p' => ChessPiece::PAWN,
+		'n' => ChessPiece::KNIGHT,
+		'b' => ChessPiece::BISHOP,
+		'r' => ChessPiece::ROOK,
+		'q' => ChessPiece::QUEEN,
+		'k' => ChessPiece::KING
 	);
 	const FILE_NUMS_AND_LETTERS = array(
 		1 => 'a',
@@ -108,9 +108,9 @@ class ChessBoard {
 					$square = $this->number_to_file($file) . $rank;
 					
 					if ( ctype_upper($char) ) {
-						$color = 'white';
+						$color = ChessPiece::WHITE;
 					} else {
-						$color = 'black';
+						$color = ChessPiece::BLACK;
 					}
 					
 					$type = self::PIECE_LETTERS[strtolower($char)];
@@ -124,9 +124,9 @@ class ChessBoard {
 		
 		// ******* SET COLOR TO MOVE *******
 		if ( $matches[9] == 'w' ) {
-			$this->color_to_move = 'white';
+			$this->color_to_move = ChessPiece::WHITE;
 		} elseif ( $matches[9] == 'b' ) {
-			$this->color_to_move = 'black';
+			$this->color_to_move = ChessPiece::BLACK;
 		} else {
 			throw new Exception('Invalid FEN - Invalid Color To Move');
 		}
@@ -173,7 +173,7 @@ class ChessBoard {
 			
 			// ******* SET HALFMOVE NUMBER *******
 			$this->halfmove_number = $matches[14] * 2 - 1;
-			if ( $this->color_to_move == 'black' ) {
+			if ( $this->color_to_move == ChessPiece::BLACK ) {
 				$this->halfmove_number++;
 			}
 		// Short fen. Use default values.
@@ -220,9 +220,9 @@ class ChessBoard {
 			}
 		}
 		
-		if ( $this->color_to_move == 'white' ) {
+		if ( $this->color_to_move == ChessPiece::WHITE ) {
 			$string .= " w ";
-		} elseif ( $this->color_to_move == 'black' ) {
+		} elseif ( $this->color_to_move == ChessPiece::BLACK ) {
 			$string .= " b ";
 		}
 		
@@ -266,9 +266,9 @@ class ChessBoard {
     function get_ascii_board() {
         $string = '';
 
-        if ( $this->color_to_move == 'white' ) {
+        if ( $this->color_to_move == ChessPiece::WHITE ) {
             $string .= "White To Move";
-        } elseif ( $this->color_to_move == 'black' ) {
+        } elseif ( $this->color_to_move == ChessPiece::BLACK ) {
             $string .= "Black To Move";
         }
 		
@@ -341,9 +341,9 @@ class ChessBoard {
 	function get_side_to_move_string() {
 		$string = '';
 		
-		if ( $this->color_to_move == 'white' ) {
+		if ( $this->color_to_move == ChessPiece::WHITE ) {
 			$string .= "White To Move";
-		} elseif ( $this->color_to_move == 'black' ) {
+		} elseif ( $this->color_to_move == ChessPiece::BLACK ) {
 			$string .= "Black To Move";
 		}
 		
@@ -392,7 +392,7 @@ class ChessBoard {
 		
 		$is_capture = $this->board[$new_square->rank][$new_square->file];
 		
-		if ( $moving_piece->type == 'pawn' || $is_capture ) {
+		if ( $moving_piece->type == ChessPiece::PAWN || $is_capture ) {
 			$this->halfmove_clock = 0;
 		} else {
 			$this->halfmove_clock++;
@@ -405,7 +405,7 @@ class ChessBoard {
 		
 		$this->board[$old_square->rank][$old_square->file] = NULL;
 		
-		if ( $this->color_to_move == 'black' ) {
+		if ( $this->color_to_move == ChessPiece::BLACK ) {
 			$this->fullmove_number++;
 		}
 		
@@ -426,10 +426,10 @@ class ChessBoard {
 	}
 	
 	function flip_color_to_move() {
-		if ( $this->color_to_move == 'white' ) {
-			$this->color_to_move = 'black';
-		} elseif ( $this->color_to_move == 'black' ) {
-			$this->color_to_move = 'white';
+		if ( $this->color_to_move == ChessPiece::WHITE ) {
+			$this->color_to_move = ChessPiece::BLACK;
+		} elseif ( $this->color_to_move == ChessPiece::BLACK ) {
+			$this->color_to_move = ChessPiece::WHITE;
 		}
 	}
 	
@@ -448,7 +448,7 @@ class ChessBoard {
 		foreach ( $this->board as $key => $value ) {
 			foreach ( $value as $key2 => $piece ) {
 				if ( $piece ) {
-					if ( $piece->type == 'king' && $piece->color == $color ) {
+					if ( $piece->type == ChessPiece::KING && $piece->color == $color ) {
 						return $piece->square;
 					}
 				}

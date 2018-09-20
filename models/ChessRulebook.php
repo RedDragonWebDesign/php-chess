@@ -62,10 +62,10 @@ class ChessRulebook {
 	const WHITE_PAWN_MOVEMENT_DIRECTIONS = array('north');
 	
 	const PROMOTION_PIECES = array(
-		'queen',
-		'rook',
-		'bishop',
-		'knight'
+		QUEEN,
+		ROOK,
+		BISHOP,
+		KNIGHT
 	);
 	
 	static function get_legal_moves_list(
@@ -88,8 +88,8 @@ class ChessRulebook {
 				// stalemate
 		
 		foreach ( $pieces_to_check as $key => $piece ) {
-			if ( $piece->type == 'pawn' ) {
-				if ( $piece->color == 'white' ) {
+			if ( $piece->type == ChessPiece::PAWN ) {
+				if ( $piece->color == ChessPiece::WHITE ) {
 					if ( $piece->on_rank(2) ) {
 						$moves = self::add_slide_moves_to_moves_list(self::WHITE_PAWN_MOVEMENT_DIRECTIONS, 2, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
 					} else {
@@ -99,7 +99,7 @@ class ChessRulebook {
 					$moves = self::add_capture_moves_to_moves_list(self::WHITE_PAWN_CAPTURE_DIRECTIONS, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
 					
 					$moves = self::add_en_passant_moves_to_moves_list($piece, $board, $moves, $store_board_in_moves);
-				} elseif ( $piece->color == 'black' ) {
+				} elseif ( $piece->color == ChessPiece::BLACK ) {
 					if ( $piece->on_rank(7) ) {
 						$moves = self::add_slide_moves_to_moves_list(self::BLACK_PAWN_MOVEMENT_DIRECTIONS, 2, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
 					} else {
@@ -110,15 +110,15 @@ class ChessRulebook {
 					
 					$moves = self::add_en_passant_moves_to_moves_list($piece, $board, $moves, $store_board_in_moves);
 				}
-			} elseif ( $piece->type == 'knight' ) {
+			} elseif ( $piece->type == ChessPiece::KNIGHT ) {
 				$moves = self::add_jump_and_jumpcapture_moves_to_moves_list(self::KNIGHT_DIRECTIONS, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
-			} elseif ( $piece->type == 'bishop' ) {
+			} elseif ( $piece->type == ChessPiece::BISHOP ) {
 				$moves = self::add_slide_and_slidecapture_moves_to_moves_list(self::BISHOP_DIRECTIONS, 7, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
-			} elseif ( $piece->type == 'rook' ) {
+			} elseif ( $piece->type == ChessPiece::ROOK ) {
 				$moves = self::add_slide_and_slidecapture_moves_to_moves_list(self::ROOK_DIRECTIONS, 7, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
-			} elseif ( $piece->type == 'queen' ) {
+			} elseif ( $piece->type == ChessPiece::QUEEN ) {
 				$moves = self::add_slide_and_slidecapture_moves_to_moves_list(self::QUEEN_DIRECTIONS, 7, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
-			} elseif ( $piece->type == 'king' ) {
+			} elseif ( $piece->type == ChessPiece::KING ) {
 				$moves = self::add_slide_and_slidecapture_moves_to_moves_list(self::KING_DIRECTIONS, 1, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
 				
 				// Set $king here so castling function can use it later.
@@ -275,8 +275,8 @@ class ChessRulebook {
 					);
 					
 					// pawn promotion
-					$white_pawn_capturing_on_rank_8 = $piece->type == "pawn" && $ending_square->rank == 8 && $piece->color == "white";
-					$black_pawn_capturing_on_rank_1 = $piece->type == "pawn" && $ending_square->rank == 1 && $piece->color == "black";
+					$white_pawn_capturing_on_rank_8 = $piece->type == ChessPiece::PAWN && $ending_square->rank == 8 && $piece->color == ChessPiece::WHITE;
+					$black_pawn_capturing_on_rank_1 = $piece->type == ChessPiece::PAWN && $ending_square->rank == 1 && $piece->color == ChessPiece::BLACK;
 					if ( $white_pawn_capturing_on_rank_8 || $black_pawn_capturing_on_rank_1 ) {
 						foreach ( self::PROMOTION_PIECES as $key => $type ) {
 							$move2 = clone $move;
@@ -340,13 +340,13 @@ class ChessRulebook {
 				);
 				
 				// en passant target square
-				if ( $piece->type == 'pawn' && $i == 2 && $store_board_in_moves ) {
+				if ( $piece->type == ChessPiece::PAWN && $i == 2 && $store_board_in_moves ) {
 					self::set_en_passant_target_square($piece, $color_to_move, $board, $new_move, $direction);
 				}
 				
 				// pawn promotion
-				$white_pawn_moving_to_rank_8 = $piece->type == "pawn" && $ending_square->rank == 8 && $piece->color == "white";
-				$black_pawn_moving_to_rank_1 = $piece->type == "pawn" && $ending_square->rank == 1 && $piece->color == "black";
+				$white_pawn_moving_to_rank_8 = $piece->type == ChessPiece::PAWN && $ending_square->rank == 8 && $piece->color == ChessPiece::WHITE;
+				$black_pawn_moving_to_rank_1 = $piece->type == ChessPiece::PAWN && $ending_square->rank == 1 && $piece->color == ChessPiece::BLACK;
 				if ( $white_pawn_moving_to_rank_8 || $black_pawn_moving_to_rank_1 ) {
 					foreach ( self::PROMOTION_PIECES as $key => $type ) {
 						$move2 = clone $new_move;
@@ -425,11 +425,11 @@ class ChessRulebook {
 		// I tried moving these into a constant called EN_PASSANT_RULES[color][property].
 		// It was actually slower! I still had to use variables to make the code readable, plus
 		// it was a two level array. Boo.
-		if ( $piece->color == 'white' ) {
+		if ( $piece->color == ChessPiece::WHITE ) {
 			$capture_directions_from_starting_square = array('northeast', 'northwest');
 			$enemy_pawn_direction_from_ending_square = array('south');
 			$en_passant_rank = 5;
-		} elseif ( $piece->color == 'black' ) {
+		} elseif ( $piece->color == ChessPiece::BLACK ) {
 			$capture_directions_from_starting_square = array('southeast', 'southwest');
 			$enemy_pawn_direction_from_ending_square = array('north');
 			$en_passant_rank = 4;
@@ -473,7 +473,7 @@ class ChessRulebook {
 		$castling_rules = array (
 			array(
 				'boolean_to_check' => 'white_can_castle_kingside',
-				'color_to_move' => 'white',
+				'color_to_move' => ChessPiece::WHITE,
 				'rook_start_square' => new ChessSquare('h1'),
 				'king_end_square' => new ChessSquare('g1'),
 				'cannot_be_attacked' => array(
@@ -488,7 +488,7 @@ class ChessRulebook {
 			),
 			array(
 				'boolean_to_check' => 'white_can_castle_queenside',
-				'color_to_move' => 'white',
+				'color_to_move' => ChessPiece::WHITE,
 				'rook_start_square' => new ChessSquare('a1'),
 				'king_end_square' => new ChessSquare('c1'),
 				'cannot_be_attacked' => array(
@@ -504,7 +504,7 @@ class ChessRulebook {
 			),
 			array(
 				'boolean_to_check' => 'black_can_castle_kingside',
-				'color_to_move' => 'black',
+				'color_to_move' => ChessPiece::BLACK,
 				'rook_start_square' => new ChessSquare('h8'),
 				'king_end_square' => new ChessSquare('g8'),
 				'cannot_be_attacked' => array(
@@ -519,7 +519,7 @@ class ChessRulebook {
 			),
 			array(
 				'boolean_to_check' => 'black_can_castle_queenside',
-				'color_to_move' => 'black',
+				'color_to_move' => ChessPiece::BLACK,
 				'rook_start_square' => new ChessSquare('a8'),
 				'king_end_square' => new ChessSquare('c8'),
 				'cannot_be_attacked' => array(
@@ -572,7 +572,7 @@ class ChessRulebook {
 				throw new Exception('Invalid FEN - Castling permissions set to TRUE but rook is missing');
 			}
 			if (
-				$piece_to_check->type != 'rook' ||
+				$piece_to_check->type != ChessPiece::ROOK ||
 				$piece_to_check->color != $board->color_to_move
 			) {
 				throw new Exception('Invalid FEN - Castling permissions set to TRUE but rook is missing');
@@ -682,10 +682,10 @@ class ChessRulebook {
 	}
 	
 	static function invert_color($color) {
-		if ( $color == 'white' ) {
-			return 'black';
+		if ( $color == ChessPiece::WHITE ) {
+			return ChessPiece::BLACK;
 		} else {
-			return 'white';
+			return ChessPiece::WHITE;
 		}
 	}
 	

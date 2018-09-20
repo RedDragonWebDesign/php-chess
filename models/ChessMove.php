@@ -2,12 +2,12 @@
 
 class ChessMove {
 	const PIECE_LETTERS = array(
-		'pawn' => 'p',
-		'knight' => 'n',
-		'bishop' => 'b',
-		'rook' => 'r',
-		'queen' => 'q',
-		'king' => 'k'
+		ChessPiece::PAWN => 'p',
+		ChessPiece::KNIGHT => 'n',
+		ChessPiece::BISHOP => 'b',
+		ChessPiece::ROOK => 'r',
+		ChessPiece::QUEEN => 'q',
+		ChessPiece::KING => 'k'
 	);
 	
 	public $starting_square;
@@ -57,22 +57,22 @@ class ChessMove {
 	
 	function possibly_remove_our_castling_privileges() {
 		// if our king or rook moves update the FEN to take away our castling privileges
-		if ( $this->color == 'black' ) {
-			if ( $this->piece_type == 'king' && $this->starting_square->alphanumeric == 'e8' ) {
+		if ( $this->color == ChessPiece::BLACK ) {
+			if ( $this->piece_type == ChessPiece::KING && $this->starting_square->alphanumeric == 'e8' ) {
 				$this->board->castling['black_can_castle_kingside'] = FALSE;
 				$this->board->castling['black_can_castle_queenside'] = FALSE;
-			} elseif ( $this->piece_type == 'rook' && $this->starting_square->alphanumeric == 'a8' ) {
+			} elseif ( $this->piece_type == ChessPiece::ROOK && $this->starting_square->alphanumeric == 'a8' ) {
 				$this->board->castling['black_can_castle_queenside'] = FALSE;
-			} elseif ( $this->piece_type == 'rook' && $this->starting_square->alphanumeric == 'h8' ) {
+			} elseif ( $this->piece_type == ChessPiece::ROOK && $this->starting_square->alphanumeric == 'h8' ) {
 				$this->board->castling['black_can_castle_kingside'] = FALSE;
 			}
-		} elseif ( $this->color == 'white' ) {
-			if ( $this->piece_type == 'king' && $this->starting_square->alphanumeric == 'e1' ) {
+		} elseif ( $this->color == ChessPiece::WHITE ) {
+			if ( $this->piece_type == ChessPiece::KING && $this->starting_square->alphanumeric == 'e1' ) {
 				$this->board->castling['white_can_castle_kingside'] = FALSE;
 				$this->board->castling['white_can_castle_queenside'] = FALSE;
-			} elseif ( $this->piece_type == 'rook' && $this->starting_square->alphanumeric == 'a1' ) {
+			} elseif ( $this->piece_type == ChessPiece::ROOK && $this->starting_square->alphanumeric == 'a1' ) {
 				$this->board->castling['white_can_castle_queenside'] = FALSE;
-			} elseif ( $this->piece_type == 'rook' && $this->starting_square->alphanumeric == 'h1' ) {
+			} elseif ( $this->piece_type == ChessPiece::ROOK && $this->starting_square->alphanumeric == 'h1' ) {
 				$this->board->castling['white_can_castle_kingside'] = FALSE;
 			}
 		}
@@ -82,13 +82,13 @@ class ChessMove {
 		// If an enemy rook is captured, update the FEN to take away enemy castling privileges.
 		// We'll keep it simple. Anytime a piece moves into a corner square (a1, a8, h1, h8),
 		// remove the other side's castling privileges.
-		if ( $this->color == 'black' ) {
+		if ( $this->color == ChessPiece::BLACK ) {
 			if ( $this->ending_square->alphanumeric == 'a1' ) {
 				$this->board->castling['white_can_castle_queenside'] = FALSE;
 			} elseif ( $this->ending_square->alphanumeric == 'h1' ) {
 				$this->board->castling['white_can_castle_kingside'] = FALSE;
 			}
-		} elseif ( $this->color == 'white' ) {
+		} elseif ( $this->color == ChessPiece::WHITE ) {
 			if ( $this->ending_square->alphanumeric == 'a8' ) {
 				$this->board->castling['black_can_castle_queenside'] = FALSE;
 			} elseif ( $this->ending_square->alphanumeric == 'h8' ) {
@@ -100,9 +100,9 @@ class ChessMove {
 	function if_castling_move_rook() {
 		
 		// if castling, move the rook into the right place
-		if ( $this->color == 'black' ) {
+		if ( $this->color == ChessPiece::BLACK ) {
 			if (
-				$this->piece_type == 'king' &&
+				$this->piece_type == ChessPiece::KING &&
 				$this->starting_square->alphanumeric == 'e8' &&
 				$this->ending_square->alphanumeric == 'g8'
 			) {
@@ -111,7 +111,7 @@ class ChessMove {
 				$this->board->make_additional_move_on_same_turn($starting_square, $ending_square);
 				$this->castling = TRUE;
 			} elseif (
-				$this->piece_type == 'king' &&
+				$this->piece_type == ChessPiece::KING &&
 				$this->starting_square->alphanumeric == 'e8' &&
 				$this->ending_square->alphanumeric == 'c8'
 			) {
@@ -120,9 +120,9 @@ class ChessMove {
 				$this->board->make_additional_move_on_same_turn($starting_square, $ending_square);
 				$this->castling = TRUE;
 			}
-		} elseif ( $this->color == 'white' ) {
+		} elseif ( $this->color == ChessPiece::WHITE ) {
 			if (
-				$this->piece_type == 'king' &&
+				$this->piece_type == ChessPiece::KING &&
 				$this->starting_square->alphanumeric == 'e1' &&
 				$this->ending_square->alphanumeric == 'g1'
 			) {
@@ -131,7 +131,7 @@ class ChessMove {
 				$this->board->make_additional_move_on_same_turn($starting_square, $ending_square);
 				$this->castling = TRUE;
 			} elseif (
-				$this->piece_type == 'king' &&
+				$this->piece_type == ChessPiece::KING &&
 				$this->starting_square->alphanumeric == 'e1' &&
 				$this->ending_square->alphanumeric == 'c1'
 			) {
@@ -170,36 +170,36 @@ class ChessMove {
 		if (
 			$this->starting_square->alphanumeric == 'e8' &&
 			$this->ending_square->alphanumeric == 'g8' &&
-			$this->piece_type == 'king' &&
-			$this->color = 'black'
+			$this->piece_type == ChessPiece::KING &&
+			$this->color = ChessPiece::BLACK
 		) {
 			$string .= 'O-O';
 		} elseif (
 			$this->starting_square->alphanumeric == 'e1' &&
 			$this->ending_square->alphanumeric == 'g1' &&
-			$this->piece_type == 'king' &&
-			$this->color = 'white'
+			$this->piece_type == ChessPiece::KING &&
+			$this->color = ChessPiece::WHITE
 		) {
 			$string .= 'O-O';
 		} elseif (
 			$this->starting_square->alphanumeric == 'e8' &&
 			$this->ending_square->alphanumeric == 'c8' &&
-			$this->piece_type == 'king' &&
-			$this->color = 'black'
+			$this->piece_type == ChessPiece::KING &&
+			$this->color = ChessPiece::BLACK
 		) {
 			$string .= 'O-O-O';
 		} elseif (
 			$this->starting_square->alphanumeric == 'e1' &&
 			$this->ending_square->alphanumeric == 'c1' &&
-			$this->piece_type == 'king' &&
-			$this->color = 'white'
+			$this->piece_type == ChessPiece::KING &&
+			$this->color = ChessPiece::WHITE
 		) {
 			$string .= 'O-O-O';
 		} else {
 			// type of piece
-			if ( $this->piece_type == 'pawn' && $this->capture ) {
+			if ( $this->piece_type == ChessPiece::PAWN && $this->capture ) {
 				$string .= substr($this->starting_square->alphanumeric, 0, 1);
-			} elseif ( $this->piece_type != 'pawn' ) {
+			} elseif ( $this->piece_type != ChessPiece::PAWN ) {
 				$string .= strtoupper(self::PIECE_LETTERS[$this->piece_type]);
 			}
 			
@@ -220,13 +220,13 @@ class ChessMove {
 			}
 			
 			// pawn promotion
-			if ( $this->promotion_piece_type == 'queen' ) {
+			if ( $this->promotion_piece_type == ChessPiece::QUEEN ) {
 				$string .= '=Q';
-			} elseif ( $this->promotion_piece_type == 'rook' ) {
+			} elseif ( $this->promotion_piece_type == ChessPiece::ROOK ) {
 				$string .= '=R';
-			} elseif ( $this->promotion_piece_type == 'bishop' ) {
+			} elseif ( $this->promotion_piece_type == ChessPiece::BISHOP ) {
 				$string .= '=B';
-			} elseif ( $this->promotion_piece_type == 'knight' ) {
+			} elseif ( $this->promotion_piece_type == ChessPiece::KNIGHT ) {
 				$string .= '=N';
 			}
 		}
@@ -244,9 +244,9 @@ class ChessMove {
 	function get_coordinate_notation() {
 		// Automatically pick queen when drag and dropping.
 		if (
-			$this->promotion_piece_type == "rook" ||
-			$this->promotion_piece_type == "bishop" ||
-			$this->promotion_piece_type == "knight"
+			$this->promotion_piece_type == ChessPiece::ROOK ||
+			$this->promotion_piece_type == ChessPiece::BISHOP ||
+			$this->promotion_piece_type == ChessPiece::KNIGHT
 		) {
 			return "";
 		} else {		
