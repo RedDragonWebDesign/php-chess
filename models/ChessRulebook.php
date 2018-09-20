@@ -79,7 +79,7 @@ class ChessRulebook {
 		
 		$moves = array();
 		
-		foreach ( $pieces_to_check as $key => $piece ) {
+		foreach ( $pieces_to_check as $piece ) {
 			if ( $piece->type == ChessPiece::PAWN ) {
 				if ( $piece->color == ChessPiece::WHITE ) {
 					if ( $piece->on_rank(2) ) {
@@ -136,7 +136,7 @@ class ChessRulebook {
 	}
 	
 	static function sort_moves_alphabetically($moves) {
-		foreach ( $moves as $key => $move ) {
+		foreach ( $moves as $move ) {
 			$temp_array[$move->get_notation()] = $move;
 		}
 		
@@ -156,7 +156,7 @@ class ChessRulebook {
 		foreach ( self::PROMOTION_PIECES as $type ) {
 			// Create list of ending squares that this type of piece can move to
 			$ending_squares = array();
-			foreach ( $moves as $key => $move ) {
+			foreach ( $moves as $move ) {
 				if ( $move->piece_type == $type ) {
 					$ending_squares[] = $move->ending_square->get_alphanumeric();
 				}
@@ -165,7 +165,7 @@ class ChessRulebook {
 			// Isolate the duplicate squares
 			$duplicates = self::get_duplicates($ending_squares);
 			
-			foreach ( $moves as $key => $move ) {
+			foreach ( $moves as $move ) {
 				if ( $move->piece_type != $type ) {
 					continue;
 				}
@@ -192,7 +192,7 @@ class ChessRulebook {
 	}
 	
 	static function add_slide_and_slidecapture_moves_to_moves_list($directions_list, $spaces, $moves, $piece, $color_to_move, $board, $store_board_in_moves) {
-		foreach ( $directions_list as $key => $direction ) {
+		foreach ( $directions_list as $direction ) {
 			for ( $i = 1; $i <= $spaces; $i++ ) {
 				$current_xy = self::DIRECTION_OFFSETS[$direction];
 				$current_xy[0] *= $i;
@@ -245,7 +245,7 @@ class ChessRulebook {
 	}
 	
 	static function add_capture_moves_to_moves_list($directions_list, $moves, $piece, $color_to_move, $board, $store_board_in_moves) {
-		foreach ( $directions_list as $key => $direction ) {
+		foreach ( $directions_list as $direction ) {
 			$current_xy = self::DIRECTION_OFFSETS[$direction];
 			
 			$ending_square = self::square_exists_and_not_occupied_by_friendly_piece(
@@ -280,7 +280,7 @@ class ChessRulebook {
 					$white_pawn_capturing_on_rank_8 = $piece->type == ChessPiece::PAWN && $ending_square->rank == 8 && $piece->color == ChessPiece::WHITE;
 					$black_pawn_capturing_on_rank_1 = $piece->type == ChessPiece::PAWN && $ending_square->rank == 1 && $piece->color == ChessPiece::BLACK;
 					if ( $white_pawn_capturing_on_rank_8 || $black_pawn_capturing_on_rank_1 ) {
-						foreach ( self::PROMOTION_PIECES as $key => $type ) {
+						foreach ( self::PROMOTION_PIECES as $type ) {
 							$move2 = clone $move;
 							$move2->set_promotion_piece($type);
 							$moves[] = $move2;
@@ -296,7 +296,7 @@ class ChessRulebook {
 	}
 	
 	static function add_slide_moves_to_moves_list($directions_list, $spaces, $moves, $piece, $color_to_move, $board, $store_board_in_moves) {
-		foreach ( $directions_list as $key => $direction ) {
+		foreach ( $directions_list as $direction ) {
 			for ( $i = 1; $i <= $spaces; $i++ ) {
 				$current_xy = self::DIRECTION_OFFSETS[$direction];
 				$current_xy[0] *= $i;
@@ -350,7 +350,7 @@ class ChessRulebook {
 				$white_pawn_moving_to_rank_8 = $piece->type == ChessPiece::PAWN && $ending_square->rank == 8 && $piece->color == ChessPiece::WHITE;
 				$black_pawn_moving_to_rank_1 = $piece->type == ChessPiece::PAWN && $ending_square->rank == 1 && $piece->color == ChessPiece::BLACK;
 				if ( $white_pawn_moving_to_rank_8 || $black_pawn_moving_to_rank_1 ) {
-					foreach ( self::PROMOTION_PIECES as $key => $type ) {
+					foreach ( self::PROMOTION_PIECES as $type ) {
 						$move2 = clone $new_move;
 						$move2->set_promotion_piece($type);
 						$moves[] = $move2;
@@ -383,7 +383,7 @@ class ChessRulebook {
 	}
 	
 	static function add_jump_and_jumpcapture_moves_to_moves_list($oclock_list, $moves, $piece, $color_to_move, $board, $store_board_in_moves) {
-		foreach ( $oclock_list as $key => $oclock ) {
+		foreach ( $oclock_list as $oclock ) {
 			$ending_square = self::square_exists_and_not_occupied_by_friendly_piece(
 				$piece->square,
 				self::OCLOCK_OFFSETS[$oclock][0],
@@ -443,7 +443,7 @@ class ChessRulebook {
 		
 		$squares_to_check = self::get_squares_in_these_directions($piece->square, $capture_directions_from_starting_square, 1);
 		
-		foreach ( $squares_to_check as $key => $square ) {
+		foreach ( $squares_to_check as $square ) {
 			if ( $square->get_alphanumeric() != $board->en_passant_target_square->get_alphanumeric() ) {
 				continue;
 			}
@@ -537,7 +537,7 @@ class ChessRulebook {
 			),
 		);
 		
-		foreach ( $castling_rules as $key => $value ) {
+		foreach ( $castling_rules as $value ) {
 			// only check castling for current color_to_move
 			if ( $value['color_to_move'] != $board->color_to_move ) {
 				continue;
@@ -597,7 +597,7 @@ class ChessRulebook {
 	static function mark_checks_and_checkmates($moves, $color_to_move) {
 		$enemy_color = self::invert_color($color_to_move);
 		
-		foreach ( $moves as $key => $move ) {
+		foreach ( $moves as $move ) {
 			$enemy_king_square = $move->board->get_king_square($enemy_color);
 			
 			$squares_attacked_by_moving_side = self::get_squares_attacked_by_this_color($color_to_move, $move->board);
@@ -622,7 +622,7 @@ class ChessRulebook {
 		$enemy_color = self::invert_color($color_to_move);
 		$new_moves = array();
 		
-		foreach ( $moves as $key => $move ) {
+		foreach ( $moves as $move ) {
 			$friendly_king_square = $move->board->get_king_square($color_to_move);
 			
 			$squares_attacked_by_enemy = self::get_squares_attacked_by_this_color($enemy_color, $move->board);
@@ -695,7 +695,7 @@ class ChessRulebook {
 		$legal_moves_for_attacker = self::get_legal_moves_list($color, $board, FALSE, FALSE, FALSE);
 		
 		$squares_attacked = array();
-		foreach ( $legal_moves_for_attacker as $key => $move ) {
+		foreach ( $legal_moves_for_attacker as $move ) {
 			// It's quicker to just keep the duplicates. They don't hurt anything.
 			$squares_attacked[] = $move->ending_square->get_int();
 		}
@@ -707,7 +707,7 @@ class ChessRulebook {
 	static function get_squares_in_these_directions($starting_square, $directions_list, $spaces) {
 		$list_of_squares = array();
 		
-		foreach ( $directions_list as $key => $direction ) {
+		foreach ( $directions_list as $direction ) {
 			// $spaces should be 1 for king, 1 or 2 for pawns, 7 for all other sliding pieces
 			// 7 is the max # of squares you can slide on a chessboard
 			
