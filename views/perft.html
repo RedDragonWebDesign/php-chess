@@ -73,7 +73,13 @@
 			?>
 			
 			Total Load Time: <?php echo $total_time; ?> ms<br />
-			Per Move Tree: <?php echo floor($total_time / $move_trees_generated); ?> ms<br />
+			Per Move Tree: <?php echo round($total_time / $move_trees_generated); ?> ms<br />
+			<?php if ( function_exists('xdebug_get_code_coverage') ): ?>
+			
+				<br />
+				XDebug is loaded. Turn it off and your code will go 9x faster!<br />
+			<?php endif; ?>
+			
 		</p>
 		
 		<?php if ( DEBUG ): ?>
