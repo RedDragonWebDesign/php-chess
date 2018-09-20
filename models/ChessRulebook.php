@@ -156,7 +156,7 @@ class ChessRulebook {
 			$ending_squares = array();
 			foreach ( $moves as $key => $move ) {
 				if ( $move->piece_type == $type ) {
-					array_push($ending_squares, $move->ending_square->get_alphanumeric());
+					$ending_squares[] = $move->ending_square->get_alphanumeric();
 				}
 			}
 			
@@ -218,7 +218,7 @@ class ChessRulebook {
 					}
 				}
 				
-				array_push($moves, new ChessMove(
+				$moves[] = new ChessMove(
 					$piece->square,
 					$ending_square,
 					$piece->color,
@@ -226,7 +226,7 @@ class ChessRulebook {
 					$capture,
 					$board,
 					$store_board_in_moves
-				));
+				);
 				
 				if ( $capture ) {
 					// stop sliding
@@ -281,10 +281,10 @@ class ChessRulebook {
 						foreach ( self::PROMOTION_PIECES as $key => $type ) {
 							$move2 = clone $move;
 							$move2->set_promotion_piece($type);
-							array_push($moves, $move2);
+							$moves[] = $move2;
 						}
 					} else {
-						array_push($moves, $move);
+						$moves[] = $move;
 					}
 				}
 			}
@@ -351,10 +351,10 @@ class ChessRulebook {
 					foreach ( self::PROMOTION_PIECES as $key => $type ) {
 						$move2 = clone $new_move;
 						$move2->set_promotion_piece($type);
-						array_push($moves, $move2);
+						$moves[] = $move2;
 					}
 				} else {
-					array_push($moves, $new_move);
+					$moves[] = $new_move;
 				}
 					
 				// empty square
@@ -400,7 +400,7 @@ class ChessRulebook {
 					}
 				}
 				
-				array_push($moves, new ChessMove(
+				$moves[] = new ChessMove(
 					$piece->square,
 					$ending_square,
 					$piece->color,
@@ -408,7 +408,7 @@ class ChessRulebook {
 					$capture,
 					$board,
 					$store_board_in_moves
-				));
+				);
 			}
 		}
 		
@@ -460,7 +460,7 @@ class ChessRulebook {
 				$enemy_pawn_square = self::get_squares_in_these_directions($square, $enemy_pawn_direction_from_ending_square, 1);
 				$move->board->remove_piece_from_square($enemy_pawn_square[0]);
 			}
-			array_push($moves, $move);
+			$moves[] = $move;
 		}
 		
 		return $moves;
@@ -579,14 +579,14 @@ class ChessRulebook {
 			}
 			
 			// The ChessMove class handles displaying castling notation, taking castling privileges out of the FEN, and moving the rook into the right place on the board. No need to do anything extra here.
-			array_push($moves, new ChessMove(
+			$moves[] = new ChessMove(
 				$piece->square,
 				$value['king_end_square'],
 				$piece->color,
 				$piece->type,
 				FALSE,
 				$board
-			));
+			);
 		}
 		
 		return $moves;
@@ -626,7 +626,7 @@ class ChessRulebook {
 			$squares_attacked_by_enemy = self::get_squares_attacked_by_this_color($enemy_color, $move->board);
 			
 			if ( ! in_array($friendly_king_square->get_int(), $squares_attacked_by_enemy) ) {
-				array_push($new_moves, $move);
+				$new_moves[] = $move;
 			}
 		}
 		
@@ -642,7 +642,7 @@ class ChessRulebook {
 				
 				if ( $piece ) {
 					if ( $piece->color == $color_to_move ) {
-						array_push($list_of_pieces, $piece);
+						$list_of_pieces[] = $piece;
 					}
 				}
 			}
@@ -695,7 +695,7 @@ class ChessRulebook {
 		$squares_attacked = array();
 		foreach ( $legal_moves_for_attacker as $key => $move ) {
 			// It's quicker to just keep the duplicates. They don't hurt anything.
-			array_push($squares_attacked, $move->ending_square->get_int());
+			$squares_attacked[] = $move->ending_square->get_int();
 		}
 		
 		return $squares_attacked;
@@ -716,7 +716,7 @@ class ChessRulebook {
 			$square = self::try_to_make_square_using_rank_and_file_num($current_xy[0], $current_xy[1]);
 			
 			if ( $square ) {
-				array_push($list_of_squares, $square);
+				$list_of_squares[] = $square;
 			}
 		}
 		
