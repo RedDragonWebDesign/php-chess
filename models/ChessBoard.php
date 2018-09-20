@@ -53,13 +53,6 @@ class ChessBoard {
 		
 		$fen = trim($fen);
 		
-		// set everything back to default
-		$legal_moves = array();
-		$checkmate = FALSE;
-		$stalemate = FALSE;
-		$move_list = array();
-		// TODO: add more
-		
 		// Basic format check. This won't catch everything, but it will catch a lot of stuff.
 		// This also parses the info we need into $matches[1] through $matches[14]
 		// $matches[12] is skipped.
@@ -353,8 +346,8 @@ class ChessBoard {
 	function get_who_is_winning_string() {
 		$points = 0;
 		
-		foreach ( $this->board as $key1 => $value1 ) {
-			foreach ( $value1 as $key2 => $piece ) {
+		foreach ( $this->board as $value1 ) {
+			foreach ( $value1 as $piece ) {
 				if ( $piece ) {
 					$points += $piece->value;
 				}

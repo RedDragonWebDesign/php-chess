@@ -552,14 +552,14 @@ class ChessRulebook {
 			// check all cannot_be_attacked squares
 			$enemy_color = self::invert_color($board->color_to_move);
 			$squares_attacked_by_enemy = self::get_squares_attacked_by_this_color($enemy_color, $board);
-			foreach ( $value['cannot_be_attacked'] as $key2 => $square_to_check ) {
+			foreach ( $value['cannot_be_attacked'] as $square_to_check ) {
 				if ( in_array($square_to_check->get_int(), $squares_attacked_by_enemy) ) {
 					continue 2;
 				}
 			}
 			
 			// check all cannot_be_occupied_squares
-			foreach ( $value['cannot_be_occupied'] as $key2 => $square_to_check ) {
+			foreach ( $value['cannot_be_occupied'] as $square_to_check ) {
 				if ( $board->square_is_occupied($square_to_check) ) {
 					continue 2;
 				}
