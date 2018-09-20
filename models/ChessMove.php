@@ -253,4 +253,8 @@ class ChessMove {
 			return $this->starting_square->get_alphanumeric() . $this->ending_square->get_alphanumeric();
 		}
 	}
+	
+	function get_piece_letter() {
+		return strtoupper(self::PIECE_LETTERS[$this->piece_type]);
+	}
 }

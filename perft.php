@@ -18,8 +18,9 @@ if ( isset($_GET['fen']) ) {
 
 $fen = $board->export_fen();
 
-const PERFT_DEPTH = 2;
+const PERFT_DEPTH = 3;
 const COUNT_CHECKS_AND_CHECKMATES = FALSE;
+const DEBUG = 0;
 $data = array();
 $move_trees_generated = 0;
 $legal_moves[0][0] = new ChessMove(NULL, NULL, NULL, NULL, NULL, $board);
@@ -48,8 +49,26 @@ for ( $depth = 1; $depth <= PERFT_DEPTH; $depth++ ) {
 	foreach ( $legal_moves[$depth - 1] as $key => $move ) {
 		$legal_moves_list = ChessRulebook::get_legal_moves_list($move->board->color_to_move, $move->board, TRUE, TRUE, COUNT_CHECKS_AND_CHECKMATES);
 		$move_trees_generated++;
+		
 		foreach ( $legal_moves_list as $key2 => $move2 ) {
-			array_push($legal_moves[$depth], $move2);
+			if ( DEBUG ) {
+				if ( $depth == 1 ) {
+					$key3 = $move2->starting_square->get_alphanumeric() . '-' . $move2->ending_square->get_alphanumeric();
+					
+					$debug[$key3] = array(
+						'count' => 0,
+						'fen' => $move2->board->export_fen(),
+					);
+				}
+				
+				if ( $depth == 2 ) {
+					$key3 = $move->starting_square->get_alphanumeric() . '-' . $move->ending_square->get_alphanumeric();
+					
+					$debug[$key3]['count']++;
+				}
+			}
+			
+			$legal_moves[$depth][] = $move2;
 			
 			$data[$depth]['nodes']++;
 			
@@ -81,6 +100,10 @@ for ( $depth = 1; $depth <= PERFT_DEPTH; $depth++ ) {
 		}
 	}
 	unset($legal_moves[$depth - 1]);
+}
+
+if ( DEBUG ) {
+	ksort($debug);
 }
 
 require_once('views/perft.html');
