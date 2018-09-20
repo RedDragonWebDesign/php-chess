@@ -79,14 +79,6 @@ class ChessRulebook {
 		
 		$moves = array();
 		
-		// TODO: Stalemate & Checkmate detection
-		// if ( ! $legal_moves )
-			// get threatened squares
-			// if friendly king is threatened
-				// checkmate
-			// else
-				// stalemate
-		
 		foreach ( $pieces_to_check as $key => $piece ) {
 			if ( $piece->type == ChessPiece::PAWN ) {
 				if ( $piece->color == ChessPiece::WHITE ) {
@@ -137,10 +129,21 @@ class ChessRulebook {
 			
 			self::mark_checks_and_checkmates($moves, $color_to_move);
 			
-			// TODO: alphabetize
+			$moves = self::sort_moves_alphabetically($moves);
 		}
 		
 		return $moves;
+	}
+	
+	// Array format
+	static function sort_moves_alphabetically($moves) {
+		foreach ( $moves as $key => $move ) {
+			$temp_array[$move->get_notation()] = $move;
+		}
+		
+		ksort($temp_array);
+		
+		return $temp_array;
 	}
 	
 	// Return format is the FIRST DUPLICATE. The second duplicate is deleted.
