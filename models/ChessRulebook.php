@@ -135,7 +135,6 @@ class ChessRulebook {
 		return $moves;
 	}
 	
-	// Array format
 	static function sort_moves_alphabetically($moves) {
 		foreach ( $moves as $key => $move ) {
 			$temp_array[$move->get_notation()] = $move;
