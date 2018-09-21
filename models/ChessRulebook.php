@@ -1,6 +1,15 @@
 <?php
 
 class ChessRulebook {
+	const NORTH = 1;
+	const SOUTH = 2;
+	const EAST = 3;
+	const WEST = 4;
+	const NORTHWEST = 5;
+	const NORTHEAST = 6;
+	const SOUTHWEST = 7;
+	const SOUTHEAST = 8;
+	
 	// Coordinates are in (rank, file) / (y, x) format
 	const OCLOCK_OFFSETS = array(
 		1 => array(2,1),
@@ -13,53 +22,53 @@ class ChessRulebook {
 		11 => array(2,-1)
 	);
 	const DIRECTION_OFFSETS = array(
-		'north' => array(1,0),
-		'south' => array(-1,0),
-		'east' => array(0,1),
-		'west' => array(0,-1),
-		'northeast' => array(1,1),
-		'northwest' => array(1,-1),
-		'southeast' => array(-1,1),
-		'southwest' => array(-1,-1)
+		self::NORTH => array(1,0),
+		self::SOUTH => array(-1,0),
+		self::EAST => array(0,1),
+		self::WEST => array(0,-1),
+		self::NORTHEAST => array(1,1),
+		self::NORTHWEST => array(1,-1),
+		self::SOUTHEAST => array(-1,1),
+		self::SOUTHWEST => array(-1,-1)
 	);
 	
 	const BISHOP_DIRECTIONS = array(
-		'northwest',
-		'northeast',
-		'southwest',
-		'southeast'
+		self::NORTHWEST,
+		self::NORTHEAST,
+		self::SOUTHWEST,
+		self::SOUTHEAST
 	);
 	const ROOK_DIRECTIONS = array(
-		'north',
-		'south',
-		'east',
-		'west'
+		self::NORTH,
+		self::SOUTH,
+		self::EAST,
+		self::WEST
 	);
 	const QUEEN_DIRECTIONS = array(
-		'north',
-		'south',
-		'east',
-		'west',
-		'northwest',
-		'northeast',
-		'southwest',
-		'southeast'
+		self::NORTH,
+		self::SOUTH,
+		self::EAST,
+		self::WEST,
+		self::NORTHWEST,
+		self::NORTHEAST,
+		self::SOUTHWEST,
+		self::SOUTHEAST
 	);
 	const KING_DIRECTIONS = array(
-		'north',
-		'south',
-		'east',
-		'west',
-		'northwest',
-		'northeast',
-		'southwest',
-		'southeast'
+		self::NORTH,
+		self::SOUTH,
+		self::EAST,
+		self::WEST,
+		self::NORTHWEST,
+		self::NORTHEAST,
+		self::SOUTHWEST,
+		self::SOUTHEAST
 	);
 	const KNIGHT_DIRECTIONS = array(1, 2, 4, 5, 7, 8, 10, 11);
-	const BLACK_PAWN_CAPTURE_DIRECTIONS = array('southeast', 'southwest');
-	const BLACK_PAWN_MOVEMENT_DIRECTIONS = array('south');
-	const WHITE_PAWN_CAPTURE_DIRECTIONS = array('northeast', 'northwest');
-	const WHITE_PAWN_MOVEMENT_DIRECTIONS = array('north');
+	const BLACK_PAWN_CAPTURE_DIRECTIONS = array(self::SOUTHEAST, self::SOUTHWEST);
+	const BLACK_PAWN_MOVEMENT_DIRECTIONS = array(self::SOUTH);
+	const WHITE_PAWN_CAPTURE_DIRECTIONS = array(self::NORTHEAST, self::NORTHWEST);
+	const WHITE_PAWN_MOVEMENT_DIRECTIONS = array(self::NORTH);
 	
 	const PROMOTION_PIECES = array(
 		ChessPiece::QUEEN,
@@ -428,12 +437,12 @@ class ChessRulebook {
 		// It was actually slower! I still had to use variables to make the code readable, plus
 		// it was a two level array. Boo.
 		if ( $piece->color == ChessPiece::WHITE ) {
-			$capture_directions_from_starting_square = array('northeast', 'northwest');
-			$enemy_pawn_direction_from_ending_square = array('south');
+			$capture_directions_from_starting_square = array(self::NORTHEAST, self::NORTHWEST);
+			$enemy_pawn_direction_from_ending_square = array(self::SOUTH);
 			$en_passant_rank = 5;
 		} elseif ( $piece->color == ChessPiece::BLACK ) {
-			$capture_directions_from_starting_square = array('southeast', 'southwest');
-			$enemy_pawn_direction_from_ending_square = array('north');
+			$capture_directions_from_starting_square = array(self::SOUTHEAST, self::SOUTHWEST);
+			$enemy_pawn_direction_from_ending_square = array(self::NORTH);
 			$en_passant_rank = 4;
 		}
 		
