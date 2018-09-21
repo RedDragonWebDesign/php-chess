@@ -10,6 +10,17 @@ class ChessRulebook {
 	const SOUTHWEST = 7;
 	const SOUTHEAST = 8;
 	
+	const ALL_DIRECTIONS = array(
+		self::NORTH,
+		self::SOUTH,
+		self::EAST,
+		self::WEST,
+		self::NORTHWEST,
+		self::NORTHEAST,
+		self::SOUTHWEST,
+		self::SOUTHEAST
+	);
+	
 	// Coordinates are in (rank, file) / (y, x) format
 	const OCLOCK_OFFSETS = array(
 		1 => array(2,1),
@@ -77,6 +88,8 @@ class ChessRulebook {
 		ChessPiece::KNIGHT
 	);
 	
+	const MAX_SLIDING_DISTANCE = 7;
+	
 	static function get_legal_moves_list(
 		$color_to_move, // Color changes when we call recursively. Can't rely on $board for color.
 		$board, // ChessBoard, not ChessBoard->board. We need the entire board in a couple of methods.
@@ -114,11 +127,11 @@ class ChessRulebook {
 			} elseif ( $piece->type == ChessPiece::KNIGHT ) {
 				$moves = self::add_jump_and_jumpcapture_moves_to_moves_list(self::KNIGHT_DIRECTIONS, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
 			} elseif ( $piece->type == ChessPiece::BISHOP ) {
-				$moves = self::add_slide_and_slidecapture_moves_to_moves_list(self::BISHOP_DIRECTIONS, 7, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
+				$moves = self::add_slide_and_slidecapture_moves_to_moves_list(self::BISHOP_DIRECTIONS, self::MAX_SLIDING_DISTANCE, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
 			} elseif ( $piece->type == ChessPiece::ROOK ) {
-				$moves = self::add_slide_and_slidecapture_moves_to_moves_list(self::ROOK_DIRECTIONS, 7, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
+				$moves = self::add_slide_and_slidecapture_moves_to_moves_list(self::ROOK_DIRECTIONS, self::MAX_SLIDING_DISTANCE, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
 			} elseif ( $piece->type == ChessPiece::QUEEN ) {
-				$moves = self::add_slide_and_slidecapture_moves_to_moves_list(self::QUEEN_DIRECTIONS, 7, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
+				$moves = self::add_slide_and_slidecapture_moves_to_moves_list(self::QUEEN_DIRECTIONS, self::MAX_SLIDING_DISTANCE, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
 			} elseif ( $piece->type == ChessPiece::KING ) {
 				$moves = self::add_slide_and_slidecapture_moves_to_moves_list(self::KING_DIRECTIONS, 1, $moves, $piece, $color_to_move, $board, $store_board_in_moves);
 				
@@ -560,9 +573,8 @@ class ChessRulebook {
 			
 			// check all cannot_be_attacked squares
 			$enemy_color = self::invert_color($board->color_to_move);
-			$squares_attacked_by_enemy = self::get_squares_attacked_by_this_color($enemy_color, $board);
 			foreach ( $value['cannot_be_attacked'] as $square_to_check ) {
-				if ( in_array($square_to_check->get_int(), $squares_attacked_by_enemy) ) {
+				if ( self::square_is_attacked($enemy_color, $board, $square_to_check) ) {
 					continue 2;
 				}
 			}
@@ -609,9 +621,7 @@ class ChessRulebook {
 		foreach ( $moves as $move ) {
 			$enemy_king_square = $move->board->get_king_square($enemy_color);
 			
-			$squares_attacked_by_moving_side = self::get_squares_attacked_by_this_color($color_to_move, $move->board);
-			
-			if ( in_array($enemy_king_square->get_alphanumeric(), $squares_attacked_by_moving_side) ) {
+			if ( self::square_is_attacked($color_to_move, $move->board, $enemy_king_square) ) {
 				$move->check = TRUE;
 				
 				$legal_moves_for_enemy = self::get_legal_moves_list($enemy_color, $move->board, TRUE, TRUE, FALSE);
@@ -634,9 +644,7 @@ class ChessRulebook {
 		foreach ( $moves as $move ) {
 			$friendly_king_square = $move->board->get_king_square($color_to_move);
 			
-			$squares_attacked_by_enemy = self::get_squares_attacked_by_this_color($enemy_color, $move->board);
-			
-			if ( ! in_array($friendly_king_square->get_int(), $squares_attacked_by_enemy) ) {
+			if ( ! self::square_is_attacked($enemy_color, $move->board, $friendly_king_square) ) {
 				$new_moves[] = $move;
 			}
 		}
@@ -700,18 +708,6 @@ class ChessRulebook {
 		}
 	}
 	
-	static function get_squares_attacked_by_this_color($color, $board) {
-		$legal_moves_for_attacker = self::get_legal_moves_list($color, $board, FALSE, FALSE, FALSE);
-		
-		$squares_attacked = array();
-		foreach ( $legal_moves_for_attacker as $move ) {
-			// It's quicker to just keep the duplicates. They don't hurt anything.
-			$squares_attacked[] = $move->ending_square->get_int();
-		}
-		
-		return $squares_attacked;
-	}
-	
 	// Used to generate en passant squares.
 	static function get_squares_in_these_directions($starting_square, $directions_list, $spaces) {
 		$list_of_squares = array();
@@ -732,5 +728,221 @@ class ChessRulebook {
 		}
 		
 		return $list_of_squares;
+	}
+	
+	/*
+	static function get_squares_attacked_by_this_color($color, $board) {
+		$legal_moves_for_attacker = self::get_legal_moves_list($color, $board, FALSE, FALSE, FALSE);
+		
+		$squares_attacked = array();
+		foreach ( $legal_moves_for_attacker as $move ) {
+			// It's quicker to just keep the duplicates. They don't hurt anything.
+			$squares_attacked[] = $move->ending_square->get_int();
+		}
+		
+		return $squares_attacked;
+	}
+	*/
+	
+	static function square_is_attacked($enemy_color, $board, $square_to_check) {
+		$friendly_color = self::invert_color($enemy_color);
+		
+		if ( self::test_square_threatened_by_sliding_pieces($board, $square_to_check, $friendly_color) ) {
+			return TRUE;
+		}
+		
+		if ( self::test_square_threatened_by_jumping_pieces($board, $square_to_check, $friendly_color) ) {
+			return TRUE;
+		}
+		
+		if ( self::test_square_threatened_by_en_passant($board, $square_to_check, $friendly_color, $enemy_color) ) {
+			return TRUE;
+		}
+		
+		return FALSE;
+	}
+	
+	static function test_square_threatened_by_sliding_pieces($board, $square_to_check, $friendly_color) {
+		foreach ( self::ALL_DIRECTIONS as $direction ) {
+			for ( $i = 1; $i <= self::MAX_SLIDING_DISTANCE; $i++ ) {
+				$current_xy = self::DIRECTION_OFFSETS[$direction];
+				$rank = $square_to_check->rank + $current_xy[0] * $i;
+				$file = $square_to_check->file + $current_xy[1] * $i;
+				
+				if ( ! self::square_is_on_board($rank, $file) ) {
+					// Square is off the board. Stop sliding in this direction.
+					break;
+				}
+				
+				$piece = self::get_piece($rank, $file, $board);
+				
+				if ( ! $piece ) {
+					// Square is empty. Continue sliding in this direction.
+					continue;
+				}
+				
+				if ( $piece->color == $friendly_color ) {
+					// Sliding is blocked by a friendly piece. Stop sliding in this direction.
+					break;
+				}
+				
+				// If this code is reached, piece must be an enemy. No need to double check.
+				
+				// I could probably structure this to be faster, but I did it this way for readability.
+				if ( $piece->type == ChessPiece::KING ) {
+					if ( $i == 1 ) {
+						return TRUE;
+					}
+				} elseif ( $piece->type == ChessPiece::QUEEN ) {
+					if ( $direction == self::NORTH || $direction == self::SOUTH || $direction == self::EAST || $direction == self::WEST || $direction == self::NORTHEAST || $direction == self::NORTHWEST || $direction == self::SOUTHEAST || $direction == self::SOUTHWEST ) {
+						return TRUE;
+					}
+				} elseif ( $piece->type == ChessPiece::ROOK ) {
+					if ( $direction == self::NORTH || $direction == self::SOUTH || $direction == self::EAST || $direction == self::WEST ) {
+						return TRUE;
+					}
+				} elseif ( $piece->type == ChessPiece::BISHOP ) {
+					if ( $direction == self::NORTHEAST || $direction == self::NORTHWEST || $direction == self::SOUTHEAST || $direction == self::SOUTHWEST ) {
+						return TRUE;
+					}
+				} elseif ( $piece->type == ChessPiece::PAWN ) {
+					if ( $i == 1 ) {
+						if ( $piece->color == ChessPiece::BLACK ) {
+							if ( $direction == self::NORTHEAST || $direction == self::NORTHWEST ) {
+								return TRUE;
+							}
+						} elseif ( $piece->color == ChessPiece::WHITE ) {
+							if ( $direction == self::SOUTHEAST || $direction == self::SOUTHWEST ) {
+								return TRUE;
+							}
+						}
+					}
+				}
+				
+				// If this code has been reached, then there is an enemy piece on this square
+				// but it is not threatening the test square. Stop sliding in this direction.
+				break;
+			}
+		}
+		
+		return FALSE;
+	}
+	
+	static function test_square_threatened_by_jumping_pieces($board, $square_to_check, $friendly_color) {
+		foreach ( self::KNIGHT_DIRECTIONS as $oclock ) {
+			$current_xy = self::OCLOCK_OFFSETS[$oclock];
+			$rank = $square_to_check->rank + $current_xy[0];
+			$file = $square_to_check->file + $current_xy[1];
+			
+			if ( ! self::square_is_on_board($rank, $file) ) {
+				// Square is off the board. On to the next test square.
+				continue;
+			}
+			
+			$piece = self::get_piece($rank, $file, $board);
+			
+			if ( ! $piece ) {
+				// Square is empty. On to the next test square.
+				continue;
+			}
+			
+			if ( $piece->color == $friendly_color ) {
+				// Square is occupied by a friendly piece. On to the next test square.
+				continue;
+			}
+			
+			// If this code is reached, piece must be an enemy. No need to double check.
+			
+			if ( $piece->type == ChessPiece::KNIGHT ) {
+				return TRUE;
+			}
+			
+			// If this code has been reached, then there is an enemy piece on this square
+			// but it is not threatening the test square. On to the next square.
+			// continue;
+		}
+		
+		return FALSE;
+	}
+	
+	static function test_square_threatened_by_en_passant($board, $square_to_check, $friendly_color, $enemy_color) {
+		// Is there an en passant target square?
+		if ( ! $board->en_passant_target_square ) {
+			return FALSE;
+		}
+	
+		// Does our square to check contain a pawn? (Only pawns can be captured en passant)
+		$piece_on_square_to_check = self::get_piece($square_to_check->rank, $square_to_check->file, $board);
+		if ( ! $piece_on_square_to_check ) {
+			// Sometimes our square to check will contain nothing.
+			// For example, when checking squares between the rook and king before castling.
+			return FALSE;
+		}
+		if ( ! $piece_on_square_to_check->type == ChessPiece::PAWN ) {
+			return FALSE;
+		}
+		
+		// Is test square next to the en passant target square? Only one square north/south
+		// of the en passant target square can be threatened.
+		if ( $friendly_color == ChessPiece::WHITE ) {
+			$test_square_to_target_square_direction = self::SOUTH;
+		} elseif ( $friendly_color == ChessPiece::BLACK ) {
+			$test_square_to_target_square_direction = self::NORTH;
+		}
+		$current_xy = self::DIRECTION_OFFSETS[$test_square_to_target_square_direction];
+		$rank = $square_to_check->rank + $current_xy[0];
+		$file = $square_to_check->file + $current_xy[1];
+		if ( ! self::square_is_on_board($rank, $file) ) {
+			// Potential en passant target square isn't even on the board. Can't be en passant.
+			return FALSE;
+		}
+		$ep_target_square_rank = $board->en_passant_target_square->rank;
+		$ep_target_square_file = $board->en_passant_target_square->file;
+		if ( $board->en_passant_target_square->rank != $rank && $board->en_passant_target_square->file != $file ) {
+			return FALSE;
+		}
+		
+		// Finally, is there an enemy pawn to the east or west of our pawn?
+		// If so, we are threatened by en passant!
+		$enemy_pawn_directions = array(self::EAST, self::WEST);
+		foreach ( $enemy_pawn_directions as $direction ) {
+			$current_xy = self::DIRECTION_OFFSETS[$direction];
+			$rank = $square_to_check->rank + $current_xy[0];
+			$file = $square_to_check->file + $current_xy[1];
+			
+			if ( ! self::square_is_on_board($rank, $file) ) {
+				// Square is off the board. On to the next check.
+				break;
+			}
+			
+			$piece = self::get_piece($rank, $file, $board);
+			
+			if ( ! $piece ) {
+				// Square is empty. On to the next check.
+				continue;
+			}
+			
+			if ( $piece->color == $enemy_color && $piece->type == ChessPiece::PAWN ) {
+				return TRUE;
+			}
+		}
+		
+		return FALSE;
+	}
+	
+	static function square_is_on_board($rank, $file) {
+		if ( $rank >= 1 && $rank <= 8 && $file >= 1 && $file <= 8 ) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+	
+	static function get_piece($rank, $file, $board) {
+		if ( $board->board[$rank][$file] ) {
+			return $board->board[$rank][$file];
+		} else {
+			return NULL;
+		}
 	}
 }
