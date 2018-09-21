@@ -101,6 +101,8 @@ class ChessRulebook {
 		
 		$moves = array();
 		
+		// TODO: Iterate through all squares on chessboard, not all pieces. Then I won't need to
+		// store each piece's ChessSquare, and I can get rid of that class completely.
 		foreach ( $pieces_to_check as $piece ) {
 			if ( $piece->type == ChessPiece::PAWN ) {
 				if ( $piece->color == ChessPiece::WHITE ) {
@@ -912,7 +914,7 @@ class ChessRulebook {
 			
 			if ( ! self::square_is_on_board($rank, $file) ) {
 				// Square is off the board. On to the next check.
-				break;
+				continue;
 			}
 			
 			$piece = self::get_piece($rank, $file, $board);
