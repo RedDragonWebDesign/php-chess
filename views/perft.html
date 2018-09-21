@@ -73,7 +73,7 @@
 			?>
 			
 			Total Load Time: <?php echo $total_time; ?> ms<br />
-			Per Move Tree: <?php echo round($total_time / $move_trees_generated); ?> ms<br />
+			Per Move Tree: <?php echo round($total_time / $move_trees_generated, 2); ?> ms<br />
 			<?php if ( function_exists('xdebug_get_code_coverage') ): ?>
 			
 				<br />

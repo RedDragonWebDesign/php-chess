@@ -47,7 +47,7 @@ class ChessSquare {
 	}
 	
 	function set_rankfile_using_alphanumeric($alphanumeric) {
-		$this->rank = substr($alphanumeric, 1, 1);
+		$this->rank = (int)substr($alphanumeric, 1, 1);
 		$this->file = self::FILE_LETTERS_AND_NUMS[ substr($alphanumeric, 0, 1) ];
 	}
 	

@@ -18,7 +18,7 @@ if ( isset($_GET['fen']) ) {
 
 $fen = $board->export_fen();
 
-const PERFT_DEPTH = 2;
+const PERFT_DEPTH = 3;
 const COUNT_CHECKS_AND_CHECKMATES = FALSE;
 const DEBUG = 0;
 $data = array();

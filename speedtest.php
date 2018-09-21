@@ -32,8 +32,14 @@ const TIMES_TO_LOOP = 1000000;
 
 $timer = new Timer();
 
+Class StaticClass {
+	function static_method($a) {
+		return $a * 2;
+	}
+}
+
 for ( $i = 1; $i <= TIMES_TO_LOOP; $i++ ) {
-	$a = array('1' => 'bob and jane', 2 => array('bob', 'jane'));
+	$c = StaticClass::static_method($i);
 }
 
 $total_time = $timer->get_duration_in_milliseconds();
@@ -45,8 +51,16 @@ echo "Loop 1 Time: $total_time ms<br />";
 
 $timer = new Timer();
 
+Class NormalClass {
+	function normal_method($a) {
+		return $a * 2;
+	}
+}
+
+$b = new NormalClass();
+
 for ( $i = 1; $i <= TIMES_TO_LOOP; $i++ ) {
-	$a = ['1' => 'bob and jane', 2 => ['bob', 'jane']];
+	$c = $b->normal_method($i);
 }
 
 $total_time = $timer->get_duration_in_milliseconds();
