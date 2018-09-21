@@ -8,7 +8,8 @@ I believe my move generation code to be bug free. I've tested about 30 perfts to
 
 ## Links
 
-- Web Version - http://www.clania.net/admiraladama/PHPChess/
+- Web Chessboard - http://www.clania.net/admiraladama/PHPChess/index.php
+- Web Perft (Depth 2) - http://www.clania.net/admiraladama/PHPChess/perft.php
 - Code Review (Stack Exchange) - https://codereview.stackexchange.com/questions/203324/php-chess-version-2
 - TalkChess.com - http://talkchess.com/forum3/viewtopic.php?f=7&t=68470
 
