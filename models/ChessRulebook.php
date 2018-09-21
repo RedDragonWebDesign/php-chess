@@ -160,6 +160,10 @@ class ChessRulebook {
 	}
 	
 	static function sort_moves_alphabetically($moves) {
+		if ( ! $moves ) {
+			return $moves;
+		}
+		
 		foreach ( $moves as $move ) {
 			$temp_array[$move->get_notation()] = $move;
 		}
@@ -732,39 +736,25 @@ class ChessRulebook {
 		return $list_of_squares;
 	}
 	
-	/*
-	static function get_squares_attacked_by_this_color($color, $board) {
-		$legal_moves_for_attacker = self::get_legal_moves_list($color, $board, FALSE, FALSE, FALSE);
-		
-		$squares_attacked = array();
-		foreach ( $legal_moves_for_attacker as $move ) {
-			// It's quicker to just keep the duplicates. They don't hurt anything.
-			$squares_attacked[] = $move->ending_square->get_int();
-		}
-		
-		return $squares_attacked;
-	}
-	*/
-	
 	static function square_is_attacked($enemy_color, $board, $square_to_check) {
 		$friendly_color = self::invert_color($enemy_color);
 		
-		if ( self::test_square_threatened_by_sliding_pieces($board, $square_to_check, $friendly_color) ) {
+		if ( self::square_threatened_by_sliding_pieces($board, $square_to_check, $friendly_color) ) {
 			return TRUE;
 		}
 		
-		if ( self::test_square_threatened_by_jumping_pieces($board, $square_to_check, $friendly_color) ) {
+		if ( self::square_threatened_by_jumping_pieces($board, $square_to_check, $friendly_color) ) {
 			return TRUE;
 		}
 		
-		if ( self::test_square_threatened_by_en_passant($board, $square_to_check, $friendly_color, $enemy_color) ) {
+		if ( self::square_threatened_by_en_passant($board, $square_to_check, $friendly_color, $enemy_color) ) {
 			return TRUE;
 		}
 		
 		return FALSE;
 	}
 	
-	static function test_square_threatened_by_sliding_pieces($board, $square_to_check, $friendly_color) {
+	static function square_threatened_by_sliding_pieces($board, $square_to_check, $friendly_color) {
 		foreach ( self::ALL_DIRECTIONS as $direction ) {
 			for ( $i = 1; $i <= self::MAX_SLIDING_DISTANCE; $i++ ) {
 				$current_xy = self::DIRECTION_OFFSETS[$direction];
@@ -830,7 +820,7 @@ class ChessRulebook {
 		return FALSE;
 	}
 	
-	static function test_square_threatened_by_jumping_pieces($board, $square_to_check, $friendly_color) {
+	static function square_threatened_by_jumping_pieces($board, $square_to_check, $friendly_color) {
 		foreach ( self::KNIGHT_DIRECTIONS as $oclock ) {
 			$current_xy = self::OCLOCK_OFFSETS[$oclock];
 			$rank = $square_to_check->rank + $current_xy[0];
@@ -867,7 +857,7 @@ class ChessRulebook {
 		return FALSE;
 	}
 	
-	static function test_square_threatened_by_en_passant($board, $square_to_check, $friendly_color, $enemy_color) {
+	static function square_threatened_by_en_passant($board, $square_to_check, $friendly_color, $enemy_color) {
 		// Is there an en passant target square?
 		if ( ! $board->en_passant_target_square ) {
 			return FALSE;
