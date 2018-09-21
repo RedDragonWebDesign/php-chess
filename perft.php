@@ -46,11 +46,11 @@ for ( $depth = 1; $depth <= PERFT_DEPTH; $depth++ ) {
 	}
 	
 	$legal_moves[$depth] = array();
-	foreach ( $legal_moves[$depth - 1] as $key => $move ) {
+	foreach ( $legal_moves[$depth - 1] as $move ) {
 		$legal_moves_list = ChessRulebook::get_legal_moves_list($move->board->color_to_move, $move->board, TRUE, TRUE, COUNT_CHECKS_AND_CHECKMATES);
 		$move_trees_generated++;
 		
-		foreach ( $legal_moves_list as $key2 => $move2 ) {
+		foreach ( $legal_moves_list as $move2 ) {
 			if ( DEBUG ) {
 				if ( $depth == 1 ) {
 					$key3 = $move2->starting_square->get_alphanumeric() . '-' . $move2->ending_square->get_alphanumeric();
