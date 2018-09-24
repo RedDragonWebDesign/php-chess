@@ -349,7 +349,7 @@ class ChessBoard {
 		foreach ( $this->board as $value1 ) {
 			foreach ( $value1 as $piece ) {
 				if ( $piece ) {
-					$points += $piece->value;
+					$points += $piece->get_value();
 				}
 			}
 		}

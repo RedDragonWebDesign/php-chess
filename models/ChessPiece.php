@@ -2,7 +2,6 @@
 
 class ChessPiece
 {
-	public $value;
 	public $color;
 	public $type;
 	public $square;
@@ -93,8 +92,6 @@ class ChessPiece
 		} else {
 			throw new Exception('Invalid ChessPiece Type');
 		}
-		
-		$this->value = self::PIECE_VALUES[$type] * self::SIDE_VALUES[$color];
 	}
 	
 	function __clone() {
@@ -118,5 +115,9 @@ class ChessPiece
 		} else {
 			return FALSE;
 		}
+	}
+	
+	function get_value() {
+		return self::PIECE_VALUES[$type] * self::SIDE_VALUES[$color];
 	}
 }
