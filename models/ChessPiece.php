@@ -118,6 +118,6 @@ class ChessPiece
 	}
 	
 	function get_value() {
-		return self::PIECE_VALUES[$type] * self::SIDE_VALUES[$color];
+		return self::PIECE_VALUES[$this->type] * self::SIDE_VALUES[$this->color];
 	}
 }
