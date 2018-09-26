@@ -9,7 +9,7 @@ I believe my move generation code to be bug free. I've tested about 30 perfts to
 ## Links
 
 - Compiled Code - http://admiraladama.dreamhosters.com/PHPChess/index.php
-- Perft (Depth 2) - http://admiraladama.dreamhosters.com/PHPChess/perft.php?fen=r1bqk2r%2Fppp2ppp%2F2np1n2%2F2b1p3%2F2B1P3%2F2PP1N2%2FPP3PPP%2FRNBQ1RK1+b+kq+-+1+6
+- Benchmark (Perft Depth 2) - http://admiraladama.dreamhosters.com/PHPChess/perft.php?fen=r1bqk2r%2Fppp2ppp%2F2np1n2%2F2b1p3%2F2B1P3%2F2PP1N2%2FPP3PPP%2FRNBQ1RK1+b+kq+-+1+6
 - Code Review (Stack Exchange) - https://codereview.stackexchange.com/questions/203324/php-chess-version-2
 - TalkChess.com - http://talkchess.com/forum3/viewtopic.php?f=7&t=68470
 
