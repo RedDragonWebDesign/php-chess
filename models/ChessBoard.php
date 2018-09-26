@@ -438,8 +438,8 @@ class ChessBoard {
 	}
 	
 	function get_king_square($color) {
-		foreach ( $this->board as $value ) {
-			foreach ( $value as $piece ) {
+		foreach ( $this->board as $rank ) {
+			foreach ( $rank as $piece ) {
 				if ( $piece ) {
 					if ( $piece->type == ChessPiece::KING && $piece->color == $color ) {
 						return $piece->square;
