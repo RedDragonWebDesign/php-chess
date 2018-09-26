@@ -80,7 +80,7 @@ class ChessBoard {
 			// RNBQKBNR
 			// 2p5
 		// The numbers are the # of blank squares from left to right
-		$rank = array();
+		$rank_string = array();
 		for ( $i = 1; $i <= 8; $i++ ) {
 			// Match string = 1, but rank = 8. Fix it here to avoid headaches.
 			$rank = $this->invert_rank_or_file_number($i);
