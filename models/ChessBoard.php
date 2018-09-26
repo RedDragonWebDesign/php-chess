@@ -163,12 +163,6 @@ class ChessBoard {
 			
 			// ******* SET FULLMOVE NUMBER *******
 			$this->fullmove_number = $matches[14];
-			
-			// ******* SET HALFMOVE NUMBER *******
-			$this->halfmove_number = $matches[14] * 2 - 1;
-			if ( $this->color_to_move == ChessPiece::BLACK ) {
-				$this->halfmove_number++;
-			}
 		// Short fen. Use default values.
 		} else {
 
