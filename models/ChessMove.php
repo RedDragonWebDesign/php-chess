@@ -171,28 +171,28 @@ class ChessMove {
 			$this->starting_square->get_alphanumeric() == 'e8' &&
 			$this->ending_square->get_alphanumeric() == 'g8' &&
 			$this->piece_type == ChessPiece::KING &&
-			$this->color = ChessPiece::BLACK
+			$this->color == ChessPiece::BLACK
 		) {
 			$string .= 'O-O';
 		} elseif (
 			$this->starting_square->get_alphanumeric() == 'e1' &&
 			$this->ending_square->get_alphanumeric() == 'g1' &&
 			$this->piece_type == ChessPiece::KING &&
-			$this->color = ChessPiece::WHITE
+			$this->color == ChessPiece::WHITE
 		) {
 			$string .= 'O-O';
 		} elseif (
 			$this->starting_square->get_alphanumeric() == 'e8' &&
 			$this->ending_square->get_alphanumeric() == 'c8' &&
 			$this->piece_type == ChessPiece::KING &&
-			$this->color = ChessPiece::BLACK
+			$this->color == ChessPiece::BLACK
 		) {
 			$string .= 'O-O-O';
 		} elseif (
 			$this->starting_square->get_alphanumeric() == 'e1' &&
 			$this->ending_square->get_alphanumeric() == 'c1' &&
 			$this->piece_type == ChessPiece::KING &&
-			$this->color = ChessPiece::WHITE
+			$this->color == ChessPiece::WHITE
 		) {
 			$string .= 'O-O-O';
 		} else {
