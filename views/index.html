@@ -20,6 +20,10 @@
 		AdmiralAdama Chess
 		</h1>
 		
+		<p>
+		Drag and drop a piece to make a move. No AI support yet, but coming soon!
+		</p>
+		
 		<div class="two_columns">
 			<div>
 				<div class="status_box">
@@ -102,8 +106,9 @@
 		<form id="import_fen">
 			<p>
 				FEN:<br />
-				<input type="text" name="fen" value="<?php echo $fen; ?>" /><br />
+				<input id="fen" type="text" name="fen" value="<?php echo $fen; ?>" /><br />
 				<input type="submit" value="Import FEN" />
+				<input type="button" id="perft" value="Perft" />
 			</p>
 		</form>
 	</body>

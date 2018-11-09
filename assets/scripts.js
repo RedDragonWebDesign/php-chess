@@ -13,7 +13,7 @@ $(document).ready(function(){
 		event.preventDefault();
 		
 		if (event.type === 'drop') {
-			var oldsquare = event.originalEvent.dataTransfer.getData('Text',$(this).attr('id'));
+			var oldsquare = event.originalEvent.dataTransfer.getData('Text', $(this).attr('id'));
 			
 		    var newsquare = $(this).attr('id');
 			
@@ -28,4 +28,8 @@ $(document).ready(function(){
 			}
 	    };
     });
-})
+	
+	$('#perft').click(function(){
+		window.location.href = 'perft.php?fen='  + $('#fen').val();
+	});
+});
