@@ -78,7 +78,7 @@ class ChessPiece
 		self::BLACK => -1
 	);
 	
-	function __construct($color, $square_string, $type) {
+	function __construct($color, string $square_string, $type) {
 		if ( in_array($color, self::VALID_COLORS) ) {
 			$this->color = $color;
 		} else {
@@ -98,17 +98,17 @@ class ChessPiece
 		$this->square = clone $this->square;
 	}
 	
-	function get_unicode_symbol()
+	function get_unicode_symbol(): string
 	{
 		return self::UNICODE_CHESS_PIECES[$this->color][$this->type];
 	}
 	
-	function get_fen_symbol()
+	function get_fen_symbol(): string
 	{
 		return self::FEN_CHESS_PIECES[$this->color][$this->type];
 	}
 	
-	function on_rank($rank)
+	function on_rank(int $rank): bool
 	{
 		if ( $rank == $this->square->rank )	{
 			return TRUE;
@@ -117,7 +117,7 @@ class ChessPiece
 		}
 	}
 	
-	function get_value() {
+	function get_value(): int {
 		return self::PIECE_VALUES[$this->type] * self::SIDE_VALUES[$this->color];
 	}
 }

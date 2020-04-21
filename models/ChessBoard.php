@@ -29,7 +29,7 @@ class ChessBoard {
 	public $halfmove_clock;
 	public $fullmove_number;
 	
-	function __construct($fen = self::DEFAULT_FEN) {
+	function __construct(string $fen = self::DEFAULT_FEN) {
 		$this->import_fen($fen);
 	}
 	
@@ -47,7 +47,7 @@ class ChessBoard {
 		}
 	}
 	
-	function import_fen($fen) {
+	function import_fen(string $fen): void {
 		// TODO: FEN probably needs its own class.
 		// Then it can have a method for each section of code below.
 		
@@ -171,7 +171,7 @@ class ChessBoard {
 		}
 	}
 	
-	function export_fen() {
+	function export_fen(): string {
 		$string = '';
 		
 		// A chessboard looks like this
@@ -250,7 +250,7 @@ class ChessBoard {
 	}
 	
 	// Keeping this for debug reasons.
-    function get_ascii_board() {
+    function get_ascii_board(): string {
         $string = '';
 
         if ( $this->color_to_move == ChessPiece::WHITE ) {
@@ -284,7 +284,7 @@ class ChessBoard {
         return $string;
     }
 	
-	function get_graphical_board() {
+	function get_graphical_board(): array {
 		// We need to throw some variables into an array so our view can build the board.
 		// The array shall be in the following format:
 			// square_color = black / white
@@ -325,7 +325,7 @@ class ChessBoard {
 		return $graphical_board_array;
 	}
 	
-	function get_side_to_move_string() {
+	function get_side_to_move_string(): string {
 		$string = '';
 		
 		if ( $this->color_to_move == ChessPiece::WHITE ) {
@@ -337,7 +337,7 @@ class ChessBoard {
 		return $string;
 	}
 	
-	function get_who_is_winning_string() {
+	function get_who_is_winning_string(): string {
 		$points = 0;
 		
 		foreach ( $this->board as $value1 ) {
@@ -358,7 +358,7 @@ class ChessBoard {
 		}
 	}
 	
-	function invert_rank_or_file_number($number) {
+	function invert_rank_or_file_number(int $number): int {
 		// 1 => 8
 		// 2 => 7
 		// etc.
@@ -366,13 +366,13 @@ class ChessBoard {
 		return 9 - $number;
 	}
 	
-	function number_to_file($number) {
+	function number_to_file(int $number) {
 		return self::FILE_NUMS_AND_LETTERS[$number];
 	}
 	
 	// Note: This does not check for and reject illegal moves. It is up to code in the ChessGame class to generate a list of legal moves, then only make_move those moves.
 	// In fact, sometimes make_move will be used on illegal moves (king in check moves), then the illegal moves will be deleted from the list of legal moves in a later step.
-	function make_move($old_square, $new_square) {
+	function make_move(ChessSquare $old_square, ChessSquare $new_square): void {
 		$moving_piece = clone $this->board[$old_square->rank][$old_square->file];
 		
 		$this->en_passant_target_square = NULL;
@@ -401,7 +401,7 @@ class ChessBoard {
 	
 	// Used to move the rook during castling.
 	// Can't use make_move because it messes up color_to_move, halfmove, and fullmove.
-	function make_additional_move_on_same_turn($old_square, $new_square) {
+	function make_additional_move_on_same_turn(ChessSquare $old_square, ChessSquare $new_square): void {
 		$moving_piece = clone $this->board[$old_square->rank][$old_square->file];
 		
 		$this->board[$new_square->rank][$new_square->file] = $moving_piece;
@@ -412,7 +412,7 @@ class ChessBoard {
 		$this->board[$old_square->rank][$old_square->file] = NULL;
 	}
 	
-	function flip_color_to_move() {
+	function flip_color_to_move(): void {
 		if ( $this->color_to_move == ChessPiece::WHITE ) {
 			$this->color_to_move = ChessPiece::BLACK;
 		} elseif ( $this->color_to_move == ChessPiece::BLACK ) {
@@ -420,7 +420,7 @@ class ChessBoard {
 		}
 	}
 	
-	function square_is_occupied($square) {
+	function square_is_occupied(ChessSquare $square): bool {
 		$rank = $square->rank;
 		$file = $square->file;
 		
@@ -431,7 +431,7 @@ class ChessBoard {
 		}
 	}
 	
-	function get_king_square($color) {
+	function get_king_square($color): ?ChessSquare {
 		foreach ( $this->board as $rank ) {
 			foreach ( $rank as $piece ) {
 				if ( $piece ) {
@@ -445,14 +445,14 @@ class ChessBoard {
 		return NULL;
 	}
 	
-	function remove_piece_from_square($square) {
+	function remove_piece_from_square(ChessSquare $square): void {
 		$rank = $square->rank;
 		$file = $square->file;
 	
 		$this->board[$rank][$file] = NULL;
 	}
 	
-	function count_pieces_on_rank($type, $rank, $color) {
+	function count_pieces_on_rank($type, int $rank, $color): int {
 		$count = 0;
 		
 		for ( $i = 1; $i <= 8; $i++ ) {
@@ -468,7 +468,7 @@ class ChessBoard {
 		return $count;
 	}
 	
-	function count_pieces_on_file($type, $file, $color) {
+	function count_pieces_on_file($type, int $file, $color): int {
 		$count = 0;
 		
 		for ( $i = 1; $i <= 8; $i++ ) {

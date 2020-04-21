@@ -42,24 +42,24 @@ class ChessSquare {
 		}
 	}
 	
-	function calculate_alphanumeric_using_rankfile($rank, $file) {
+	function calculate_alphanumeric_using_rankfile(int $rank, int $file): string {
 		return self::FILE_NUMS_AND_LETTERS[$file] . $rank;
 	}
 	
-	function set_rankfile_using_alphanumeric($alphanumeric) {
+	function set_rankfile_using_alphanumeric(string $alphanumeric): void {
 		$this->rank = (int)substr($alphanumeric, 1, 1);
 		$this->file = self::FILE_LETTERS_AND_NUMS[ substr($alphanumeric, 0, 1) ];
 	}
 	
-	function get_file_letter() {
+	function get_file_letter(): string {
 		return self::FILE_NUMS_AND_LETTERS[$this->file];
 	}
 	
-	function get_alphanumeric() {
+	function get_alphanumeric(): string {
 		return $this->calculate_alphanumeric_using_rankfile($this->rank, $this->file);
 	}
 	
-	function get_int() {
+	function get_int(): int {
 		// Primitive type int is faster than alphanumeric or ChessSquare for storing the
 		// chess square in a list.
 		return (int)($this->rank . $this->file);

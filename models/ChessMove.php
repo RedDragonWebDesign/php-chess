@@ -25,13 +25,13 @@ class ChessMove {
 	public $board;
 	
 	function __construct(
-		$starting_square,
-		$ending_square,
+		ChessSquare $starting_square,
+		ChessSquare $ending_square,
 		$color,
 		$piece_type,
-		$capture,
-		$old_board,
-		$store_board = TRUE
+		bool $capture,
+		ChessBoard $old_board,
+		bool $store_board = TRUE
 	) {
 		$this->starting_square = $starting_square;
 		$this->ending_square = $ending_square;
@@ -55,7 +55,7 @@ class ChessMove {
 		}
 	}
 	
-	function possibly_remove_our_castling_privileges() {
+	function possibly_remove_our_castling_privileges(): void {
 		// if our king or rook moves update the FEN to take away our castling privileges
 		if ( $this->color == ChessPiece::BLACK ) {
 			if ( $this->piece_type == ChessPiece::KING && $this->starting_square->get_alphanumeric() == 'e8' ) {
@@ -78,7 +78,7 @@ class ChessMove {
 		}
 	}
 	
-	function possibly_remove_enemy_castling_privileges() {
+	function possibly_remove_enemy_castling_privileges(): void {
 		// If an enemy rook is captured, update the FEN to take away enemy castling privileges.
 		// We'll keep it simple. Anytime a piece moves into a corner square (a1, a8, h1, h8),
 		// remove the other side's castling privileges.
@@ -97,7 +97,7 @@ class ChessMove {
 		}
 	}
 	
-	function if_castling_move_rook() {
+	function if_castling_move_rook(): void {
 		
 		// if castling, move the rook into the right place
 		if ( $this->color == ChessPiece::BLACK ) {
@@ -152,7 +152,7 @@ class ChessMove {
 		}
 	}
 	
-	function set_promotion_piece($piece_type) {
+	function set_promotion_piece($piece_type): void {
 		// update the piece
 		$rank = $this->ending_square->rank;
 		$file = $this->ending_square->file;
@@ -164,7 +164,7 @@ class ChessMove {
 		$this->promotion_piece_type = $piece_type;
 	}
 	
-	function get_notation() {
+	function get_notation(): string {
 		$string = '';
 		
 		if (
@@ -241,7 +241,7 @@ class ChessMove {
 		return $string;
 	}
 	
-	function get_coordinate_notation() {
+	function get_coordinate_notation(): string {
 		// Automatically pick queen when drag and dropping.
 		if (
 			$this->promotion_piece_type == ChessPiece::ROOK ||
@@ -254,7 +254,7 @@ class ChessMove {
 		}
 	}
 	
-	function get_piece_letter() {
+	function get_piece_letter(): string {
 		return strtoupper(self::PIECE_LETTERS[$this->piece_type]);
 	}
 }

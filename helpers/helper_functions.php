@@ -1,7 +1,7 @@
 <?php
 
 	// Example usage: html_var_export($limit, '$limit');
-	function html_var_export($var, $var_name = NULL)
+	function html_var_export($var, bool $var_name = NULL): void
 	{
 		$output = '';
 		
@@ -15,7 +15,7 @@
 		echo $output;
 	}
 	
-	function nl2br_and_nbsp($string)
+	function nl2br_and_nbsp(string $string): string
 	{
 		$string = nl2br($string);
 		
@@ -24,7 +24,7 @@
 		return $string;
 	}
 	
-	function nbsp($string)
+	function nbsp(string $string): string
 	{
 		preg_replace('/\t/', '&nbsp;&nbsp;&nbsp;&nbsp;', $string);
 		
@@ -41,12 +41,12 @@
 		return $string;
 	}
 	
-	function print_var_name($var) {
+	function print_var_name($var): ?string {
 		foreach($GLOBALS as $var_name => $value) {
 			if ($value === $var) {
 				return $var_name;
 			}
 		}
 
-		return false;
+		return NULL;
 	}

@@ -92,11 +92,11 @@ class ChessRulebook {
 	
 	static function get_legal_moves_list(
 		$color_to_move, // Color changes when we call recursively. Can't rely on $board for color.
-		$board, // ChessBoard, not ChessBoard->board. We need the entire board in a couple of methods.
-		$need_perfect_move_list = TRUE,
-		$store_board_in_moves = TRUE,
-		$need_perfect_notation = TRUE
-	) {
+		ChessBoard $board, // ChessBoard, not ChessBoard->board. We need the entire board in a couple of methods.
+		bool $need_perfect_move_list = TRUE,
+		bool $store_board_in_moves = TRUE,
+		bool $need_perfect_notation = TRUE
+	): array {
 		$pieces_to_check = self::get_all_pieces_by_color($color_to_move, $board);
 		
 		$moves = array();
@@ -159,7 +159,7 @@ class ChessRulebook {
 		return $moves;
 	}
 	
-	static function sort_moves_alphabetically($moves) {
+	static function sort_moves_alphabetically(array $moves): array {
 		if ( ! $moves ) {
 			return $moves;
 		}
@@ -175,11 +175,12 @@ class ChessRulebook {
 	
 	// Return format is the FIRST DUPLICATE. The second duplicate is deleted.
 	// It keeps the original key intact.
-	static function get_duplicates($array) {
+	static function get_duplicates(array $array): array {
 		return array_unique(array_diff_assoc($array, array_unique($array)));
 	}
 	
-	static function clarify_ambiguous_pieces($moves, $color_to_move, $board) {
+	// Returns void. Just modifies the ChessMoves in the $moves array by reference.
+	static function clarify_ambiguous_pieces(array $moves, $color_to_move, ChessBoard $board): void {
 		// For queens, rooks, bishops, and knights
 		foreach ( self::PROMOTION_PIECES as $type ) {
 			// Create list of ending squares that this type of piece can move to
@@ -219,7 +220,15 @@ class ChessRulebook {
 		}
 	}
 	
-	static function add_slide_and_slidecapture_moves_to_moves_list($directions_list, $spaces, $moves, $piece, $color_to_move, $board, $store_board_in_moves) {
+	static function add_slide_and_slidecapture_moves_to_moves_list(
+		array $directions_list,
+		int $spaces,
+		array $moves,
+		ChessPiece $piece,
+		$color_to_move,
+		ChessBoard $board,
+		bool $store_board_in_moves
+	): array {
 		foreach ( $directions_list as $direction ) {
 			for ( $i = 1; $i <= $spaces; $i++ ) {
 				$current_xy = self::DIRECTION_OFFSETS[$direction];
@@ -272,7 +281,14 @@ class ChessRulebook {
 		return $moves;
 	}
 	
-	static function add_capture_moves_to_moves_list($directions_list, $moves, $piece, $color_to_move, $board, $store_board_in_moves) {
+	static function add_capture_moves_to_moves_list(
+		array $directions_list,
+		array $moves,
+		ChessPiece $piece,
+		$color_to_move,
+		ChessBoard $board,
+		bool $store_board_in_moves
+	): array {
 		foreach ( $directions_list as $direction ) {
 			$current_xy = self::DIRECTION_OFFSETS[$direction];
 			
@@ -323,7 +339,15 @@ class ChessRulebook {
 		return $moves;
 	}
 	
-	static function add_slide_moves_to_moves_list($directions_list, $spaces, $moves, $piece, $color_to_move, $board, $store_board_in_moves) {
+	static function add_slide_moves_to_moves_list(
+		array $directions_list,
+		int $spaces,
+		array $moves,
+		ChessPiece $piece,
+		$color_to_move,
+		ChessBoard $board,
+		bool $store_board_in_moves
+	): array {
 		foreach ( $directions_list as $direction ) {
 			for ( $i = 1; $i <= $spaces; $i++ ) {
 				$current_xy = self::DIRECTION_OFFSETS[$direction];
@@ -396,7 +420,13 @@ class ChessRulebook {
 		return $moves;
 	}
 	
-	static function set_en_passant_target_square($piece, $color_to_move, $board, $new_move, $direction) {
+	static function set_en_passant_target_square(
+		ChessPiece $piece,
+		$color_to_move,
+		ChessBoard $board,
+		ChessMove $new_move,
+		$direction
+	): void {
 		$en_passant_xy = self::DIRECTION_OFFSETS[$direction];
 		
 		$en_passant_target_square = self::square_exists_and_not_occupied_by_friendly_piece(
@@ -410,7 +440,14 @@ class ChessRulebook {
 		$new_move->board->en_passant_target_square = $en_passant_target_square;
 	}
 	
-	static function add_jump_and_jumpcapture_moves_to_moves_list($oclock_list, $moves, $piece, $color_to_move, $board, $store_board_in_moves) {
+	static function add_jump_and_jumpcapture_moves_to_moves_list(
+		array $oclock_list,
+		array $moves,
+		ChessPiece $piece,
+		$color_to_move,
+		ChessBoard $board,
+		bool $store_board_in_moves
+	): array {
 		foreach ( $oclock_list as $oclock ) {
 			$ending_square = self::square_exists_and_not_occupied_by_friendly_piece(
 				$piece->square,
@@ -445,8 +482,12 @@ class ChessRulebook {
 		return $moves;
 	}
 	
-	
-	static function add_en_passant_moves_to_moves_list($piece, $board, $moves, $store_board_in_moves) {
+	static function add_en_passant_moves_to_moves_list(
+		ChessPiece $piece,
+		ChessBoard $board,
+		array $moves,
+		bool $store_board_in_moves
+	): array {
 		// This occurs often, so put it on top.
 		if ( ! $board->en_passant_target_square ) {
 			return $moves;
@@ -496,7 +537,11 @@ class ChessRulebook {
 		return $moves;
 	}
 
-	static function add_castling_moves_to_moves_list($moves, $piece, $board) {
+	static function add_castling_moves_to_moves_list(
+		array $moves,
+		ChessPiece $piece,
+		ChessBoard $board
+	): array {
 		// This can't be a constant or a class variable because it has ChessSquares in it.
 		// I tried using strings instead of ChessSquares, but it breaks stuff.
 		// Not worth the trouble.
@@ -621,7 +666,7 @@ class ChessRulebook {
 		return $moves;
 	}
 	
-	static function mark_checks_and_checkmates($moves, $color_to_move) {
+	static function mark_checks_and_checkmates(array $moves, $color_to_move): void {
 		$enemy_color = self::invert_color($color_to_move);
 		
 		foreach ( $moves as $move ) {
@@ -639,7 +684,7 @@ class ChessRulebook {
 		}
 	}
 	
-	static function eliminate_king_in_check_moves($king, $moves, $color_to_move) {
+	static function eliminate_king_in_check_moves(ChessPiece $king, array $moves, $color_to_move): array {
 		if ( ! $king ) {
 			throw new Exception('Invalid FEN - One of the kings is missing');
 		}
@@ -658,7 +703,7 @@ class ChessRulebook {
 		return $new_moves;
 	}
 		
-	static function get_all_pieces_by_color($color_to_move, $board) {
+	static function get_all_pieces_by_color($color_to_move, ChessBoard $board): array {
 		$list_of_pieces = array();
 		
 		for ( $i = 1; $i <= 8; $i++ ) {
@@ -677,7 +722,13 @@ class ChessRulebook {
 	}
 	
 	// positive X = east, negative X = west, positive Y = north, negative Y = south
-	static function square_exists_and_not_occupied_by_friendly_piece($starting_square, $x_delta, $y_delta, $color_to_move, $board) {
+	static function square_exists_and_not_occupied_by_friendly_piece(
+		ChessSquare $starting_square,
+		int $x_delta,
+		int $y_delta,
+		$color_to_move,
+		ChessBoard $board
+	): ?ChessSquare {
 		$rank = $starting_square->rank + $x_delta;
 		$file = $starting_square->file + $y_delta;
 		
@@ -685,24 +736,24 @@ class ChessRulebook {
 		
 		// Ending square is off the board
 		if ( ! $ending_square ) {
-			return FALSE;
+			return null;
 		}
 		
 		// Ending square contains a friendly piece
 		if ( $board->board[$rank][$file] ) {
 			if ( $board->board[$rank][$file]->color == $color_to_move ) {
-				return FALSE;
+				return null;
 			}
 		}
 		
 		return $ending_square;
 	}
 	
-	static function try_to_make_square_using_rank_and_file_num($rank, $file) {
+	static function try_to_make_square_using_rank_and_file_num(int $rank, int $file): ?ChessSquare {
 		if ( $rank >= 1 && $rank <= 8 && $file >= 1 && $file <= 8 ) {
 			return new ChessSquare($rank, $file);
 		} else {
-			return FALSE;
+			return null;
 		}
 	}
 	
@@ -715,7 +766,11 @@ class ChessRulebook {
 	}
 	
 	// Used to generate en passant squares.
-	static function get_squares_in_these_directions($starting_square, $directions_list, $spaces) {
+	static function get_squares_in_these_directions(
+		ChessSquare $starting_square,
+		array $directions_list,
+		int $spaces
+	): array {
 		$list_of_squares = array();
 		
 		foreach ( $directions_list as $direction ) {
@@ -736,7 +791,11 @@ class ChessRulebook {
 		return $list_of_squares;
 	}
 	
-	static function square_is_attacked($enemy_color, $board, $square_to_check) {
+	static function square_is_attacked(
+		$enemy_color,
+		ChessBoard $board,
+		ChessSquare $square_to_check
+	): bool {
 		$friendly_color = self::invert_color($enemy_color);
 		
 		if ( self::square_threatened_by_sliding_pieces($board, $square_to_check, $friendly_color) ) {
@@ -754,7 +813,11 @@ class ChessRulebook {
 		return FALSE;
 	}
 	
-	static function square_threatened_by_sliding_pieces($board, $square_to_check, $friendly_color) {
+	static function square_threatened_by_sliding_pieces(
+		ChessBoard $board,
+		ChessSquare $square_to_check,
+		$friendly_color
+	): bool {
 		foreach ( self::ALL_DIRECTIONS as $direction ) {
 			for ( $i = 1; $i <= self::MAX_SLIDING_DISTANCE; $i++ ) {
 				$current_xy = self::DIRECTION_OFFSETS[$direction];
@@ -820,7 +883,11 @@ class ChessRulebook {
 		return FALSE;
 	}
 	
-	static function square_threatened_by_jumping_pieces($board, $square_to_check, $friendly_color) {
+	static function square_threatened_by_jumping_pieces(
+		ChessBoard $board,
+		ChessSquare $square_to_check,
+		$friendly_color
+	): bool {
 		foreach ( self::KNIGHT_DIRECTIONS as $oclock ) {
 			$current_xy = self::OCLOCK_OFFSETS[$oclock];
 			$rank = $square_to_check->rank + $current_xy[0];
@@ -857,7 +924,12 @@ class ChessRulebook {
 		return FALSE;
 	}
 	
-	static function square_threatened_by_en_passant($board, $square_to_check, $friendly_color, $enemy_color) {
+	static function square_threatened_by_en_passant(
+		ChessBoard $board,
+		ChessSquare $square_to_check,
+		$friendly_color,
+		$enemy_color
+	): bool {
 		// Is there an en passant target square?
 		if ( ! $board->en_passant_target_square ) {
 			return FALSE;
@@ -922,7 +994,7 @@ class ChessRulebook {
 		return FALSE;
 	}
 	
-	static function square_is_on_board($rank, $file) {
+	static function square_is_on_board(int $rank, int $file): bool {
 		if ( $rank >= 1 && $rank <= 8 && $file >= 1 && $file <= 8 ) {
 			return TRUE;
 		} else {
@@ -930,7 +1002,7 @@ class ChessRulebook {
 		}
 	}
 	
-	static function get_piece($rank, $file, $board) {
+	static function get_piece(int $rank, int $file, ChessBoard $board): ?ChessPiece {
 		if ( $board->board[$rank][$file] ) {
 			return $board->board[$rank][$file];
 		} else {

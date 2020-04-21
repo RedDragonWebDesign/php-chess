@@ -6,7 +6,7 @@ $time = $time[1] + $time[0];
 $start = $time;
 
 error_reporting(E_ALL);
-ini_set('display_errors', 'On');
+ini_set('display_errors', 1);
 
 require_once('helpers/helper_functions.php');
 require_once('models/ChessRulebook.php');
