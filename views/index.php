@@ -1,0 +1,127 @@
+<?php
+
+if (! defined('VIEWER')) {
+    die("This file needs to be included into a viewer.");
+}
+
+?>
+
+<!DOCTYPE html>
+
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8" />
+		
+		<title>
+			PHP Chess - Red Dragon Web Design
+		</title>
+		
+		<link rel="stylesheet" href="assets/style.css">
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		
+		<script src="assets/scripts.js"></script>
+	</head>
+
+	<body>
+		<h1>
+		PHP Chess
+		</h1>
+		
+		<p>
+		Drag and drop a piece to make a move. No AI support yet, but coming soon.
+		</p>
+		
+		<div class="two_columns">
+			<div>
+				<div class="status_box">
+					<?php echo $side_to_move; ?>
+					
+				</div>
+				
+				<div class="status_box">
+					<?php echo $who_is_winning; ?>
+					
+				</div>
+				
+				<table id="graphical_board">
+					<tbody>
+						<?php foreach ( $graphical_board_array as $rank => $row ): ?>
+						
+							<tr>
+								<?php foreach ( $row as $file => $column ): ?>
+								
+									<td
+										id ="<?php echo $column['id']; ?>"
+										class="<?php echo $column['square_color']; ?>"
+									>
+										<span
+											class="draggable_piece"
+											draggable="true"
+										>
+											<?php echo $column['piece']; ?>
+											
+										</span>
+									</td>
+								<?php endforeach; ?>
+								
+							</tr>
+						<?php endforeach; ?>
+						
+					</tbody>
+				</table>
+				<!-- <input type="submit" name="flip" value="Flip The Board" /> -->
+				<input type="button" onclick="window.location='.'" value="Reset The Board" />
+			</div>
+			
+			<div>
+				<form id="make_move">
+					Legal Moves:<br />
+					<select name="move" size="19">
+						<?php foreach ( $legal_moves as $key => $move ): ?>
+							
+							<option
+								value="<?php echo $move->board->export_fen(); ?>"
+								data-coordinate-notation="<?php echo $move->get_coordinate_notation(); ?>"
+							>
+								<?php echo $move->get_notation(); ?>
+								
+							</option>
+						<?php endforeach; ?>
+						
+					</select><br />
+					Move Count: <?php echo count($legal_moves); ?><br />
+					
+					<?php
+					
+					$time = microtime();
+					$time = explode(' ', $time);
+					$time = $time[1] + $time[0];
+					$finish = $time;
+					$total_time = round(($finish - $start), 4);
+					
+					$total_time *= 1000;
+					$total_time = round($total_time);
+					
+					?>
+					
+					Load Time: <?php echo $total_time; ?> ms<br />
+					<input type="submit" value="Make Move" />
+				</form>
+			</div>
+		</div>
+		
+		<form id="import_fen">
+			<p>
+				FEN:<br />
+				<input id="fen" type="text" name="fen" value="<?php echo $fen; ?>" /><br />
+				<input type="submit" value="Import FEN" />
+				<input type="button" id="perft" value="Perft" />
+			</p>
+		</form>
+		
+		<p>
+		Want to report a bug or request a feature? <a href="https://github.com/GeneralKenobi1/PHPChess/issues">Create an issue</a> on our GitHub.
+		</p>
+	</body>
+</html>

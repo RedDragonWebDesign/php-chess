@@ -1,0 +1,4 @@
+SPEED
+- JavaScript may be faster than PHP. Port it over and see.
+- 0x88 board representation
+- use integers to store board and move

@@ -31,4 +31,5 @@ $who_is_winning = $board->get_who_is_winning_string();
 $graphical_board_array = $board->get_graphical_board();
 $legal_moves = ChessRulebook::get_legal_moves_list($board->color_to_move, $board);
 
-require_once('views/index.html');
+define('VIEWER', true);
+require_once('views/index.php');

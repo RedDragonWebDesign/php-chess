@@ -121,4 +121,5 @@ if ( $debug ) {
 	ksort($debug_data);
 }
 
-require_once('views/perft.html');
+define('VIEWER', true);
+require_once('views/perft.php');
