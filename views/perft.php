@@ -10,7 +10,7 @@ if (! defined('VIEWER')) {
 
 <html lang="en-us">
 	<head>
-		<meta charset="utf-8" />
+		<meta charset="utf-8">
 		
 		<title>
 			Perft - PHP Chess - Red Dragon Web Design
@@ -32,30 +32,30 @@ if (! defined('VIEWER')) {
 		
 		<form id="import_fen">
 			<p>
-				FEN:<br />
-				<input type="text" name="fen" value="<?php echo $fen; ?>" /><br />
+				FEN:<br>
+				<input type="text" name="fen" value="<?php echo $fen; ?>"><br>
 			</p>
 			
 			<p>
-				Depth:<br />
-				<input type="number" name="perft_depth" value="<?php echo $perft_depth; ?>" /><br />
+				Depth:<br>
+				<input type="number" name="perft_depth" value="<?php echo $perft_depth; ?>"><br>
 			</p>
 			
 			<p>
-				Detail Level:<br />
-				<input type="radio" name="detail_level" value="1" <?php if ( $detail_level == 1 ) {echo "checked";} ?> /> Nodes Only
-				<input type="radio" name="detail_level" value="2" <?php if ( $detail_level == 2 ) {echo "checked";} ?> /> Details
-				<input type="radio" name="detail_level" value="3" <?php if ( $detail_level == 3 ) {echo "checked";} ?> /> Checks & Checkmates
+				Detail Level:<br>
+				<input type="radio" name="detail_level" value="1" <?php if ( $detail_level == 1 ) {echo "checked";} ?>> Nodes Only
+				<input type="radio" name="detail_level" value="2" <?php if ( $detail_level == 2 ) {echo "checked";} ?>> Details
+				<input type="radio" name="detail_level" value="3" <?php if ( $detail_level == 3 ) {echo "checked";} ?>> Checks & Checkmates
 			</p>
 			
 			<p>
-				Debug:<br />
-				<input type="radio" name="debug" value="0" <?php if ( $debug == 0 ) {echo "checked";} ?> /> Normal
-				<input type="radio" name="debug" value="1" <?php if ( $debug == 1 ) {echo "checked";} ?> /> Debug
+				Debug:<br>
+				<input type="radio" name="debug" value="0" <?php if ( $debug == 0 ) {echo "checked";} ?>> Normal
+				<input type="radio" name="debug" value="1" <?php if ( $debug == 1 ) {echo "checked";} ?>> Debug
 			</p>
 			
 			<p>
-				<input type="submit" value="Perft" />
+				<input type="submit" value="Perft">
 			</p>
 		</form>
 		
@@ -122,12 +122,12 @@ if (! defined('VIEWER')) {
 			
 			?>
 			
-			Total Load Time: <?php echo $total_time; ?> ms<br />
-			Per Move Tree: <?php echo round($total_time / $move_trees_generated, 2); ?> ms<br />
+			Total Load Time: <?php echo $total_time; ?> ms<br>
+			Per Move Tree: <?php echo round($total_time / $move_trees_generated, 2); ?> ms<br>
 			<?php if ( function_exists('xdebug_get_code_coverage') ): ?>
 			
-				<br />
-				XDebug is loaded. Turn it off and your code will go 9x faster!<br />
+				<br>
+				XDebug is loaded. Turn it off and your code will go 9x faster!<br>
 			<?php endif; ?>
 			
 		</p>
@@ -135,12 +135,12 @@ if (! defined('VIEWER')) {
 		<?php if ( $debug ): ?>
 		
 			<p>
-				<b><i><u>DEBUG</u></i></b><br />
+				<b><i><u>DEBUG</u></i></b><br>
 				<?php $count = 0; ?>
 				<?php foreach ( $debug_data as $key => $value ): ?>
 				
 					<?php $count++; ?>
-					<?php echo $count; ?> - <?php echo $key; ?> - <?php echo $value['count']; ?> - <?php echo $value['fen']; ?><br />
+					<?php echo $count; ?> - <?php echo $key; ?> - <?php echo $value['count']; ?> - <?php echo $value['fen']; ?><br>
 				<?php endforeach; ?>
 				
 			</p>

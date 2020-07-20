@@ -52,7 +52,7 @@ for ( $i = 1; $i <= TIMES_TO_LOOP; $i++ ) {
 
 $total_time = $timer->get_duration_in_milliseconds();
 
-echo "Loop 1 Time: $total_time ms<br />";
+echo "Loop 1 Time: $total_time ms<br>";
 
 
 // ********************* LOOP 2 **************************
@@ -67,4 +67,4 @@ for ( $i = 1; $i <= TIMES_TO_LOOP; $i++ ) {
 
 $total_time = $timer->get_duration_in_milliseconds();
 
-echo "Loop 2 Time: $total_time ms<br />";
+echo "Loop 2 Time: $total_time ms<br>";

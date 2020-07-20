@@ -10,7 +10,7 @@
 			$output .= $var_name . ' = ';
 		}
 		
-		$output .= nl2br_and_nbsp(var_export($var, TRUE)) . "<br /><br />";
+		$output .= nl2br_and_nbsp(var_export($var, TRUE)) . "<br><br>";
 		
 		echo $output;
 	}

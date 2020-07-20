@@ -10,7 +10,7 @@ if (! defined('VIEWER')) {
 
 <html lang="en-us">
 	<head>
-		<meta charset="utf-8" />
+		<meta charset="utf-8">
 		
 		<title>
 			PHP Chess - Red Dragon Web Design
@@ -70,13 +70,13 @@ if (! defined('VIEWER')) {
 						
 					</tbody>
 				</table>
-				<!-- <input type="submit" name="flip" value="Flip The Board" /> -->
-				<input type="button" onclick="window.location='.'" value="Reset The Board" />
+				<!-- <input type="submit" name="flip" value="Flip The Board"> -->
+				<input type="button" onclick="window.location='.'" value="Reset The Board">
 			</div>
 			
 			<div>
 				<form id="make_move">
-					Legal Moves:<br />
+					Legal Moves:<br>
 					<select name="move" size="19">
 						<?php foreach ( $legal_moves as $key => $move ): ?>
 							
@@ -89,8 +89,8 @@ if (! defined('VIEWER')) {
 							</option>
 						<?php endforeach; ?>
 						
-					</select><br />
-					Move Count: <?php echo count($legal_moves); ?><br />
+					</select><br>
+					Move Count: <?php echo count($legal_moves); ?><br>
 					
 					<?php
 					
@@ -105,18 +105,18 @@ if (! defined('VIEWER')) {
 					
 					?>
 					
-					Load Time: <?php echo $total_time; ?> ms<br />
-					<input type="submit" value="Make Move" />
+					Load Time: <?php echo $total_time; ?> ms<br>
+					<input type="submit" value="Make Move">
 				</form>
 			</div>
 		</div>
 		
 		<form id="import_fen">
 			<p>
-				FEN:<br />
-				<input id="fen" type="text" name="fen" value="<?php echo $fen; ?>" /><br />
-				<input type="submit" value="Import FEN" />
-				<input type="button" id="perft" value="Perft" />
+				FEN:<br>
+				<input id="fen" type="text" name="fen" value="<?php echo $fen; ?>"><br>
+				<input type="submit" value="Import FEN">
+				<input type="button" id="perft" value="Perft">
 			</p>
 		</form>
 		

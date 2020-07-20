@@ -267,7 +267,7 @@ class ChessBoard {
         // So we need to adjust the loops a bit.
 
         for ( $rank = 8; $rank >= 1; $rank-- ) {
-            $string .= "<br />";
+            $string .= "<br>";
 
             for ( $file = 1; $file <= 8; $file++ ) {
                 $square = $this->board[$rank][$file];
@@ -279,7 +279,7 @@ class ChessBoard {
                 }
             }
         }
-		$string .= "<br /><br />";
+		$string .= "<br><br>";
 
         return $string;
     }
