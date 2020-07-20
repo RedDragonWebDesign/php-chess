@@ -121,7 +121,7 @@ if (! defined('VIEWER')) {
 		</form>
 		
 		<p>
-		Want to report a bug or request a feature? <a href="https://github.com/GeneralKenobi1/PHPChess/issues">Create an issue</a> on our GitHub.
+		Want to report a bug or request a feature? <a href="https://github.com/RedDragonWebDesign/php-chess/issues">Create an issue</a> on our GitHub.
 		</p>
 	</body>
 </html>
