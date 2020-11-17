@@ -4,6 +4,8 @@ For fun and for programming practice, I created a chess move generator and web c
 
 I ended up using lots of OOP. I created the following classes: ChessRulebook (static), ChessMove, ChessBoard, ChessPiece, ChessSquare.
 
+I have about 2000 lines of code so far. Most of the interesting code is in the ***models*** folder.
+
 I believe my move generation code to be bug free. I've tested about 30 perfts to depth 3 and everything passes.
 
 ## Links
@@ -26,7 +28,7 @@ I am currently trying to optimize the code without gutting it. I have learned a 
 - PHP
   - Prefer constants over variables
   - Prefer integers over strings
-  - Keep class variables lean. Don't calculate extra variables. Use getters for those. (e.g. don't have a FEN variable in ChessBoard)
+  - Keep class variables lean. Don't calculate extra variables in the constructor. Use getters for those. (e.g. don't have a FEN variable in ChessBoard)
   - Prefer $haystack[needle] over array_search($needle, $haystack)
   - Use XDEBUG_PROFILE and Qcachegrind. Sort by SELF. Optimize the functions at the top.
   - Extract code groups into functions to help with profiling (and readability).
