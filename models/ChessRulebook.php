@@ -215,6 +215,8 @@ class ChessRulebook {
 					$move->disambiguation = $move->starting_square->get_file_letter();
 				} elseif ( $pieces_on_same_file > 1 ) {
 					$move->disambiguation = $move->starting_square->rank;
+				} else { // e.g. knights on b1 and f3 (diagonal from each other) that can both move to d2
+					$move->disambiguation = $move->starting_square->get_file_letter();
 				}
 			}
 		}
